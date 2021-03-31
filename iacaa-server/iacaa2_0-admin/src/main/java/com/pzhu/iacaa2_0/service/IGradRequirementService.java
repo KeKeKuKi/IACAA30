@@ -26,4 +26,6 @@ public interface IGradRequirementService extends IService<GradRequirement> {
     List<GradRequirement> list(GradRequirement gradRequirement);
 
     List<GradRequirementVo> voList(GradRequirementVo vo);
+
+    Boolean summaryThisYearReqGrade();
 }

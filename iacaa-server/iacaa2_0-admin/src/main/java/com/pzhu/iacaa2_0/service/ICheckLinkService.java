@@ -17,4 +17,6 @@ import java.util.List;
 public interface ICheckLinkService extends IService<CheckLink> {
 
     List<CheckLink> list(CheckLinkVo vo);
+
+    Boolean summaryByCourseTaskID(Long id);
 }

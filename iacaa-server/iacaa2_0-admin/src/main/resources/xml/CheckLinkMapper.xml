@@ -39,4 +39,13 @@
         ORDER BY a.name
     </select>
 
+    <select id="summaryByCourseTaskId" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        UPDATE t_course_task
+        set sys_grade = (
+            SELECT AVG(average_score/target_score)
+            from t_check_link
+            WHERE task_id = #{id})
+        WHERE id in (select distinct(task_id) from t_check_link) and id = #{id}
+    </select>
+
 </mapper>

@@ -54,13 +54,19 @@ export const constantRoutes = [
         path: 'ReqAnalysis',
         component: () => import('@/views/analysis/ReqAnalysis'),
         name: 'ReqAnalysis',
-        meta: { title: '毕业要求', icon: 'list', affix: true }
+        meta: { title: '毕业分析', icon: 'chart', affix: true }
+      },
+      {
+        path: 'TargetsAnalysis',
+        component: () => import('@/views/analysis/TargetsAnalysis'),
+        name: 'TargetsAnalysis',
+        meta: { title: '指标点分析', icon: 'chart', affix: true }
       },
       {
         path: 'CourseAnalysis',
         component: () => import('@/views/analysis/CourseAnalysis'),
         name: 'CourseAnalysis',
-        meta: { title: '课程成绩', icon: 'list', affix: true }
+        meta: { title: '课程成绩', icon: 'chart', affix: true }
       }
     ]
   },
@@ -120,13 +126,7 @@ export const constantRoutes = [
         path: 'CheckLinkScore',
         component: () => import('@/views/score/CheckLinkScore'),
         name: 'CheckLinkScore',
-        meta: { title: '添加成绩', icon: 'list', affix: true }
-      },
-      {
-        path: 'SerchScore',
-        component: () => import('@/views/score/SerchScore'),
-        name: 'SerchScore',
-        meta: { title: '查看成绩', icon: 'list', affix: true }
+        meta: { title: '编辑成绩', icon: 'list', affix: true }
       }
     ]
   },

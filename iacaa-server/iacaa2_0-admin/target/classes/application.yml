@@ -23,8 +23,6 @@ spring:
     time-zone: "GMT+8"
   profiles:
     include: jdbc
-  aop:
-    proxy-target-class: false
   application:
     name: Iacaa20Server
 # pagehelper

@@ -5,6 +5,9 @@
         <el-option label="2021" value="2021" />
         <el-option label="2020" value="2020" />
       </el-select>
+      <span style="float: right;margin-right: 180px">
+        <el-button type="primary" @click="refreshData">刷新数据</el-button>
+      </span>
       <div id="historyData" class="historyCanvas" />
     </div>
   </div>
@@ -14,7 +17,7 @@
 import echarts from 'echarts'
 import { requestByClient } from '@/utils/HttpUtils'
 import { supplierConsumer } from '@/utils/HttpUtils'
-
+import { Loading } from 'element-ui'
 export default {
   name: "ReqAnalysis",
 
@@ -29,6 +32,29 @@ export default {
     this.getList()
   },
   methods: {
+    refreshData(){
+      const loadingInstance = Loading.service({
+        background: 'rgba(0, 0, 0, 0.7)',
+        text: '加载中，请稍后。。。',
+        target: 'document.body',
+        body: true
+      })
+      requestByClient(supplierConsumer, 'POST', 'gradRequirement/summaryAll', {
+      },res => {
+        if (res.data.succ) {
+          this.$message({
+            message: '数据已刷新',
+            type: 'success'
+          })
+          this.getList()
+          // 关闭加载动画
+          this.$nextTick(() => {
+            loadingInstance.close()
+          })
+        }
+        this.loading = false
+      })
+    },
     getList() {
       requestByClient(supplierConsumer, 'POST', 'gradRequirement/list', {
         year: this.serchForm.year
@@ -36,8 +62,8 @@ export default {
         if (res.data.succ) {
           let data = res.data.data
           let reqs = data.map(i => {return i.name})
-          let sysScores = data.map(i => {return i.sysGrade})
-          let stuScores = data.map(i => {return i.stuGrade})
+          let sysScores = data.map(i => {return i.sysGrade*100})
+          let stuScores = data.map(i => {return i.stuGrade*100})
           this.setChartData(reqs, sysScores, stuScores)
         }
         this.loading = false
@@ -87,7 +113,8 @@ export default {
           }
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          max: 100
         },
         series: [{
           name: '系统成绩',

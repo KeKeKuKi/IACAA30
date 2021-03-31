@@ -14,5 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-01-15
  */
 public interface ITargetService extends IService<Target> {
-
+    Boolean summaryThisYearTargetsGrade();
 }

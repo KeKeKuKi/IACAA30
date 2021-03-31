@@ -82,4 +82,9 @@ public class CourseTaskController {
             return ActionResult.ofFail(200,"所支撑单个指标点权重总和需小于1大于0");
         }
     }
+
+    @RequestMapping("/summaryCourseTask")
+    public ActionResult summaryCourseTask(){
+        return ActionResult.ofSuccess(courseTaskService.summaryCourseTask());
+    }
 }

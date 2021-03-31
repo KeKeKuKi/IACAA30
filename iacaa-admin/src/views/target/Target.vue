@@ -84,7 +84,7 @@
               <el-select v-model="item.course.id" placeholder="选择课程" clearable filterable style="width: 60%;margin-top: 10px">
                 <el-option v-for="(item1,index1) in courses" :key="index1" :label="item1.name" :value="item1.id" />
               </el-select>
-              <el-input-number v-model="item.mix" :min="0.1" :max="1" step="0.1" label="权重系数" style="width: 30%;margin-top: 10px" />
+              <el-input-number v-model="item.mix" :min="0.1" :max="1" :step="0.1" label="权重系数" style="width: 30%;margin-top: 10px" />
               <el-button type="danger" icon="el-icon-delete" circle @click="deleteDiscribe(index)" />
             </span>
           </el-form-item>
@@ -215,7 +215,7 @@ export default {
       this.addForm.name = ''
     },
     handleAddTarget(targetId) {
-      this.targetEditForm.courseTargets.push({ course: { id: '' }, target: { id: this.targetEditForm.id }, mix: '' })
+      this.targetEditForm.courseTargets.push({ course: { id: '' }, target: { id: this.targetEditForm.id }, mix: 0.1 })
     },
     deleteDiscribe(index) {
       let id = this.targetEditForm.courseTargets[index].id

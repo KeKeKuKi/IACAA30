@@ -105,4 +105,10 @@ public class TargetController {
         boolean b = targetService.removeById(target.getId());
         return b ? ActionResult.ofSuccess() : ActionResult.ofFail("删除失败");
     }
+
+    @RequestMapping("/summaryAll")
+    public ActionResult summaryAll(){
+        Boolean aBoolean = targetService.summaryThisYearTargetsGrade();
+        return aBoolean ? ActionResult.ofSuccess() : ActionResult.ofFail("统计失败");
+    }
 }

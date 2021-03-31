@@ -76,4 +76,13 @@
         order By update_date DESC
     </select>
 
+    <update id="summaryByReqId" parameterType="java.lang.Long">
+        UPDATE t_grad_requirement
+        set sys_grade =  (
+            SELECT AVG(sys_grade)
+            from t_target
+            WHERE req_id = #{id})
+        WHERE id in (select distinct(req_id) from t_target) and id = #{id}
+    </update>
+
 </mapper>

@@ -17,4 +17,6 @@ import java.util.List;
 public interface CheckLinkMapper extends BaseMapper<CheckLink> {
 
     List<CheckLink> list(CheckLinkVo vo);
+
+    Integer summaryByCourseTaskId(Long id);
 }

@@ -18,4 +18,6 @@ import java.util.List;
 public interface ICourseTaskService extends IService<CourseTask> {
 
     List<CourseTaskVo> voList(CourseTask courseTask);
+
+    Boolean summaryCourseTask();
 }

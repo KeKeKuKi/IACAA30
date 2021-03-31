@@ -18,4 +18,6 @@ public interface GradRequirementMapper extends BaseMapper<GradRequirement> {
     List<GradRequirement> getByEntity(GradRequirement gradRequirement);
 
     List<GradRequirementVo> voList(GradRequirementVo vo);
+
+    Integer summaryByReqId(Long id);
 }

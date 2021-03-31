@@ -15,4 +15,6 @@ import java.util.List;
  */
 public interface TargetMapper extends BaseMapper<Target> {
     List<Target> getByReqId(String id);
+
+    Integer summaryByTargetId(Long id);
 }

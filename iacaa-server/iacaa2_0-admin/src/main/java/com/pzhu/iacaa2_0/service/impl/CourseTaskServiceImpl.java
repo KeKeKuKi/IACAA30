@@ -1,13 +1,19 @@
 package com.pzhu.iacaa2_0.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.CourseTask;
 import com.pzhu.iacaa2_0.entityVo.CourseTaskVo;
 import com.pzhu.iacaa2_0.mapper.CourseTaskMapper;
+import com.pzhu.iacaa2_0.service.ICheckLinkService;
 import com.pzhu.iacaa2_0.service.ICourseTaskService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Wrapper;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -20,9 +26,23 @@ import java.util.List;
  */
 @Service
 public class CourseTaskServiceImpl extends ServiceImpl<CourseTaskMapper, CourseTask> implements ICourseTaskService {
+    @Autowired
+    ICheckLinkService checkLinkService;
 
     @Override
     public List<CourseTaskVo> voList(CourseTask courseTask) {
         return baseMapper.voList(courseTask);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean summaryCourseTask(){
+        QueryWrapper<CourseTask> courseTaskQueryWrapper = new QueryWrapper<>();
+        courseTaskQueryWrapper.eq("year",LocalDateTime.now().getYear());
+        List<CourseTask> courseTasks = baseMapper.selectList(courseTaskQueryWrapper);
+        courseTasks.forEach(i -> {
+            checkLinkService.summaryByCourseTaskID(i.getId());
+        });
+        return true;
     }
 }

@@ -24,4 +24,19 @@
         select * from t_target where req_id = #{id}
     </select>
 
+    <update id="summaryByTargetId" parameterType="java.lang.Long">
+        UPDATE t_target set sys_grade = (
+            SELECT SUM(ctt.grade*ctt.tmix)
+                from (
+                    SELECT ct.course_id,ct.tmix,SUM(cmix*sys_grade) grade
+                    from (
+                        SELECT a.course_id,a.target_id,b.mix tmix,a.mix cmix,a.sys_grade
+                        FROM t_course_task a
+                        LEFT JOIN t_course_target b ON (a.target_id = #{id} AND a.course_id = b.course_id and a.target_id = b.target_id)
+                        ) ct
+                    GROUP BY ct.course_id,ct.tmix
+                    ) ctt)
+        WHERE id in (select distinct(target_id) from t_course_task) and id = #{id}
+    </update>
+
 </mapper>

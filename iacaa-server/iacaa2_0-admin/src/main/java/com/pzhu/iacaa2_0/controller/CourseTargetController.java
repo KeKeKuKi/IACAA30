@@ -4,9 +4,11 @@ package com.pzhu.iacaa2_0.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.CourseTarget;
+import com.pzhu.iacaa2_0.entity.CourseTask;
 import com.pzhu.iacaa2_0.entity.Target;
 import com.pzhu.iacaa2_0.entityVo.CourseTargetVo;
 import com.pzhu.iacaa2_0.service.ICourseTargetService;
+import com.pzhu.iacaa2_0.service.ICourseTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +34,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class CourseTargetController {
     @Autowired
     ICourseTargetService courseTargetService;
+
+    @Autowired
+    ICourseTaskService courseTaskService;
 
     @RequestMapping("/list")
     public ActionResult list(@RequestBody CourseTarget courseTarget){
@@ -82,7 +87,12 @@ public class CourseTargetController {
 
     @RequestMapping("/deleteOne")
     public ActionResult deleteOne(@RequestBody CourseTargetVo courseTargetVo){
+        CourseTarget target = courseTargetService.getById(courseTargetVo.getId());
+        QueryWrapper<CourseTask> courseTaskQueryWrapper = new QueryWrapper<>();
+        courseTaskQueryWrapper.eq("course_id",target.getCourseId());
+        courseTaskQueryWrapper.eq("target_id",target.getTargetId());
+        boolean remove = courseTaskService.remove(courseTaskQueryWrapper);
         boolean b = courseTargetService.removeById(courseTargetVo.getId());
-        return b ? ActionResult.ofSuccess() : ActionResult.ofFail("删除失败");
+        return b && remove ? ActionResult.ofSuccess() : ActionResult.ofFail("删除失败");
     }
 }
