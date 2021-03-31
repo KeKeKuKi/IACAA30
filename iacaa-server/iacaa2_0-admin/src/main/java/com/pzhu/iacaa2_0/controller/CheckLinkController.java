@@ -45,7 +45,7 @@ public class CheckLinkController {
 
     @RequestMapping("/pageList")
     public ActionResult pageList(@RequestBody CheckLinkVo vo) {
-        PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
+//        PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
         List<CheckLink> list = checkLinkService.list(vo);
         PageInfo page = new PageInfo(list);
         return ActionResult.ofSuccess(page);

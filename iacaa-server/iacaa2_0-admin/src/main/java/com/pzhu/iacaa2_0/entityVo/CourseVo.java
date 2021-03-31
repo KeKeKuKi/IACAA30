@@ -10,8 +10,6 @@ import java.util.List;
  */
 @Data
 public class CourseVo extends Course {
-    private Integer pageNum = 1;
-    private Integer pageSize = 20;
     private String word;
     List<CourseTask> courseTasks;
 }

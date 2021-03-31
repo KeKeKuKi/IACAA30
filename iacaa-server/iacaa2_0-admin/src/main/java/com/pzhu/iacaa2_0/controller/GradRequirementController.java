@@ -6,9 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gapache.security.annotation.AuthResource;
 import com.gapache.security.annotation.NeedAuth;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.pzhu.iacaa2_0.base.PageBaseController;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.GradRequirement;
 import com.pzhu.iacaa2_0.entity.Target;
@@ -42,7 +40,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/gradRequirement")
 @NeedAuth("GradRequirement")
-public class GradRequirementController extends PageBaseController {
+public class GradRequirementController{
 
     @Autowired
     IGradRequirementService gradRequirementService;
@@ -78,7 +76,7 @@ public class GradRequirementController extends PageBaseController {
             wrapper.eq("year", vo.getYear());
         }
         wrapper.orderByDesc("year", "update_date");
-        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
+//        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
         List<GradRequirement> list = gradRequirementService.list(wrapper);
         PageInfo page = new PageInfo(list);
         return ActionResult.ofSuccess(page);
@@ -88,7 +86,7 @@ public class GradRequirementController extends PageBaseController {
     @RequestMapping("/voList")
     @AuthResource(scope = "voList", name = "毕业要求Vo列表")
     public ActionResult voList(@RequestBody GradRequirementVo vo) {
-        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
+//        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
         List<GradRequirementVo> list = gradRequirementService.voList(vo);
         PageInfo page = new PageInfo(list);
         return ActionResult.ofSuccess(page);

@@ -3,21 +3,16 @@ package com.pzhu.iacaa2_0.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pzhu.iacaa2_0.common.ActionResult;
-import com.pzhu.iacaa2_0.entity.GradRequirement;
 import com.pzhu.iacaa2_0.entity.Target;
-import com.pzhu.iacaa2_0.entityVo.GradRequirementVo;
 import com.pzhu.iacaa2_0.entityVo.IdsVo;
 import com.pzhu.iacaa2_0.entityVo.TargetVo;
-import com.pzhu.iacaa2_0.service.IGradRequirementService;
 import com.pzhu.iacaa2_0.service.ITargetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -50,7 +45,7 @@ public class TargetController {
         if(!StringUtils.isEmpty(vo.getReqId())){
             wrapper.eq("req_id",vo.getReqId());
         }
-        PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
+//        PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
         List<Target> list = targetService.list(wrapper);
         PageInfo page = new PageInfo(list);
         return ActionResult.ofSuccess(page);

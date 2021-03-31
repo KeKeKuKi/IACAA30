@@ -96,7 +96,7 @@
                 <el-option label="日常考勤" value="日常考勤" />
               </el-select>
               <el-input v-model="item.targetScore"  label="目标分数" style="width: 25%;margin-top: 10px" disabled/>
-              <el-input v-model="item.averageScore"  label="平均分数" style="width: 25%;margin-top: 10px" />
+              <el-input v-model="item.averageScore"  label="平均分数" style="width: 25%;margin-top: 10px" @change="checkAvgScore(item.averageScore,item.targetScore,index)"/>
             </span>
           </el-form-item>
         </el-form>
@@ -147,6 +147,15 @@ export default {
     this.getCourseList()
   },
   methods:{
+    checkAvgScore(avg,target,index){
+      if(avg > target || avg < 0){
+        this.$message({
+          message: '平均成绩不得大于目标成绩且不小于零',
+          type: 'error'
+        });
+        this.ckeckLinkEditForm.checkLinks[index].averageScore = ''
+      }
+    },
     getCourseList() {
       requestByClient(supplierConsumer, 'POST', 'course/voList', {
         pageNum: this.currentPage,
@@ -204,6 +213,16 @@ export default {
       this.ckeckLinkEditForm.checkLinks.push({name:'',mix: '',targetScore: '',taskId: this.ckeckLinkEditForm.courseTask.id})
     },
     submitCheckLinksForm(){
+      let checkLinks = this.ckeckLinkEditForm.checkLinks
+      for (let checkLink of checkLinks) {
+        if(checkLink.averageScore === ''){
+          this.$message({
+            message: '平均成绩不得为空',
+            type: 'error'
+          });
+          return false
+        }
+      }
       this.loading = true
       requestByClient(supplierConsumer, 'POST','checkLink/saveOrUpdate', this.ckeckLinkEditForm.checkLinks,res => {
         if (res.data.succ) {

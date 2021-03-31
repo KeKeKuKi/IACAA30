@@ -1,9 +1,7 @@
 package com.pzhu.iacaa2_0.controller;
 
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.pzhu.iacaa2_0.base.PageBaseController;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.Course;
 import com.pzhu.iacaa2_0.entityVo.CourseVo;
@@ -28,7 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/course")
-public class CourseController extends PageBaseController {
+public class CourseController{
 
     @Autowired
     ICourseService courseService;
@@ -41,11 +39,16 @@ public class CourseController extends PageBaseController {
 
     @RequestMapping("/voList")
     public ActionResult list(@RequestBody CourseVo vo) throws Exception{
-
-        PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
+//        PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
         List<CourseVo> list = courseService.voList(vo);
         PageInfo page = new PageInfo(list);
         return ActionResult.ofSuccess(page);
+    }
+
+    @RequestMapping("/voListAll")
+    public ActionResult voListAll(@RequestBody CourseVo vo) {
+        List<CourseVo> list = courseService.voList(vo);
+        return ActionResult.ofSuccess(list);
     }
 
     @RequestMapping("/save")

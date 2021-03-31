@@ -3,17 +3,18 @@ package com.pzhu.iacaa2_0.controller;
 
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.CourseTask;
-import com.pzhu.iacaa2_0.entityVo.CheckLinkVo;
 import com.pzhu.iacaa2_0.entityVo.CourseTaskVo;
 import com.pzhu.iacaa2_0.service.ICourseTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**

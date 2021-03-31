@@ -13,6 +13,4 @@ import lombok.Data;
 @Data
 public class CheckLinkVo extends CheckLink {
     String word;
-    Integer pageSize;
-    Integer pageNum;
 }

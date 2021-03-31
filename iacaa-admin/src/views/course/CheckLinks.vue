@@ -212,6 +212,31 @@ export default {
       this.ckeckLinkEditForm.checkLinks.push({name:'',mix: '',targetScore: '',taskId: this.ckeckLinkEditForm.courseTask.id})
     },
     submitCheckLinksForm(){
+      let checkLinks = this.ckeckLinkEditForm.checkLinks
+      for (let checkLink of checkLinks) {
+        if(checkLink.name === ''){
+          this.$message({
+            message: '考核环节不能为空',
+            type: 'error'
+          });
+          return false
+        }
+        if(checkLink.mix === '' || checkLink.mix < 0){
+          this.$message({
+            message: '权重不能为空切大于零',
+            type: 'error'
+          });
+          return false
+        }
+        if(checkLink.targetScore === '' || checkLink.targetScore < 0){
+          this.$message({
+            message: '目标分数不能为空且大于零',
+            type: 'error'
+          });
+          return false
+        }
+      }
+
       this.loading = true
       requestByClient(supplierConsumer, 'POST','checkLink/saveOrUpdate', this.ckeckLinkEditForm.checkLinks,res => {
         if (res.data.succ) {

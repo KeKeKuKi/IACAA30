@@ -12,8 +12,6 @@ import java.util.List;
  */
 @Data
 public class GradRequirementVo extends GradRequirement {
-    private Integer pageNum = 1;
-    private Integer pageSize = 20;
     private String word;
 
     private List<Target> targets;
