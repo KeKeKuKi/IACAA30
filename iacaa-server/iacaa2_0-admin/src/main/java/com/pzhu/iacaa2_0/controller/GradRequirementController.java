@@ -166,8 +166,6 @@ public class GradRequirementController{
         toClient.flush();
         toClient.close();
         fis.close();
-
-//        ExportFileUtils.export(new HashMap<>(0),"classpath:/doc","import.xlsx",response);
     }
 
     @RequestMapping("/summaryAll")
