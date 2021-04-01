@@ -13,6 +13,5 @@ import java.util.List;
 @Data
 public class GradRequirementVo extends GradRequirement {
     private String word;
-
     private List<Target> targets;
 }

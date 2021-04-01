@@ -56,7 +56,7 @@ export default {
       })
     },
     getList() {
-      requestByClient(supplierConsumer, 'POST', 'gradRequirement/list', {
+      requestByClient(supplierConsumer, 'POST', 'gradRequirement/voList', {
         year: this.serchForm.year
       },res => {
         if (res.data.succ) {

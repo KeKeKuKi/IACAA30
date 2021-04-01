@@ -78,8 +78,7 @@ public class GradRequirementController{
         wrapper.orderByDesc("year", "update_date");
 //        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
         List<GradRequirement> list = gradRequirementService.list(wrapper);
-        PageInfo page = new PageInfo(list);
-        return ActionResult.ofSuccess(page);
+        return ActionResult.ofSuccess(list);
     }
 
 
@@ -88,8 +87,7 @@ public class GradRequirementController{
     public ActionResult voList(@RequestBody GradRequirementVo vo) {
 //        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
         List<GradRequirementVo> list = gradRequirementService.voList(vo);
-        PageInfo page = new PageInfo(list);
-        return ActionResult.ofSuccess(page);
+        return ActionResult.ofSuccess(list);
     }
 
     @RequestMapping("/voListAll")

@@ -59,5 +59,23 @@
         </where>
     </select>
 
+    <select id="list" parameterType="com.pzhu.iacaa2_0.entity.CourseTask" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from t_course_task
+        <where>
+            <trim prefixOverrides="AND">
+                <if test="id != null and id !=''">
+                    AND id = #{id}
+                </if>
+                <if test="courseId != null and courseId !=''">
+                    AND course_id = #{courseId}
+                </if>
+                <if test="targetId != null and targetId !=''">
+                    AND target_id = #{targetId}
+                </if>
+            </trim>
+        </where>
+    </select>
+
 
 </mapper>
