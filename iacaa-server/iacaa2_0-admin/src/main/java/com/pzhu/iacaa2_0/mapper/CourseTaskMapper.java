@@ -19,4 +19,6 @@ public interface CourseTaskMapper extends BaseMapper<CourseTask> {
     List<CourseTask> getByCourseId(Long id);
 
     List<CourseTaskVo> voList(CourseTask courseTask);
+
+    List<CourseTask> list(CourseTask courseTask);
 }

@@ -45,4 +45,9 @@ public class CourseTaskServiceImpl extends ServiceImpl<CourseTaskMapper, CourseT
         });
         return true;
     }
+
+    @Override
+    public List<CourseTask> list(CourseTask courseTask) {
+        return baseMapper.list(courseTask);
+    }
 }

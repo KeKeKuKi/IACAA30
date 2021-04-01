@@ -67,6 +67,11 @@ public class TargetController {
         return ActionResult.ofSuccess(list);
     }
 
+    @RequestMapping("/getOne")
+    public ActionResult getOne(@RequestBody Target target){
+        return ActionResult.ofSuccess(targetService.getById(target.getId()));
+    }
+
     @RequestMapping("/update")
     public ActionResult update(@RequestBody Target target){
         target.setUpdateDate(LocalDateTime.now());

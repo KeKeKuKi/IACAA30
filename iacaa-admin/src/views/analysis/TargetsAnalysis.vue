@@ -1,15 +1,29 @@
 <template>
   <div>
     <div class="historyLabel">
-      <el-select v-model="serchForm.year" placeholder="选择事件" filterable clearable @change="getList()">
-        <el-option label="2021" value="2021"/>
-        <el-option label="2020" value="2020"/>
-      </el-select>
+      <el-cascader
+        v-model="serchForm.id"
+        :options="options"
+        :props="{ expandTrigger: 'hover' }"
+        @change="handleChange">
+      </el-cascader>
       <span style="float: right;margin-right: 180px">
         <el-button type="primary" @click="refreshData">刷新数据</el-button>
       </span>
       <div id="historyData" class="historyCanvas"/>
     </div>
+    <el-dialog
+      :title="targetChartForm.title"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      width="80%"
+      @open="open"
+      center
+    >
+      <span id="targetPie" class="targetPie"/>
+      <span id="targetBar" class="targetBar"/>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -24,7 +38,16 @@ export default {
   data() {
     return {
       serchForm: {
-        year: new Date().getFullYear()
+        year: new Date().getFullYear(),
+        id: '',
+      },
+      options: [],
+      dialogVisible: false,
+      targetChartForm: {
+        title: '',
+        score: '',
+        courseTargets: [],
+        courseTasks: []
       }
     }
   },
@@ -32,6 +55,214 @@ export default {
     this.getList()
   },
   methods: {
+    open() {
+      this.$nextTick(() => {
+        this.setTargetChart()
+        this.setTargetChartBar()
+      })
+    },
+    handleChange(value) {
+      requestByClient(supplierConsumer, 'POST', 'target/getOne', {
+        id: value[1]
+      }, res => {
+        if (res.data.succ) {
+          if(res.data.data.sysGrade > 0){
+            this.targetChartForm.title = res.data.data.discribe + '(' + (res.data.data.sysGrade*100).toFixed(2) + ')'
+            this.targetChartForm.score = res.data.data.sysGrade
+            requestByClient(supplierConsumer, 'POST', 'courseTarget/voList', {
+              targetId: value[1]
+            }, res => {
+              if (res.data.succ) {
+                this.targetChartForm.courseTargets = res.data.data
+                requestByClient(supplierConsumer, 'POST', 'courseTask/voList', {
+                  targetId: value[1],
+                }, res => {
+                  if (res.data.succ) {
+                    this.targetChartForm.courseTasks = res.data.data
+                    this.dialogVisible = true
+                  }
+                })
+              }
+            })
+          }else {
+            this.$message({
+              message: '该指标点暂无成绩',
+              type: 'warning'
+            })
+            return false
+          }
+        }
+      })
+
+    },
+    setTargetChartBar(){
+      let chartDom = document.getElementById('targetBar');
+      const myChart = echarts.init(chartDom)
+      let option
+      let courseTasks = this.targetChartForm.courseTasks
+      let colors = [
+        '#199237',
+        '#196292',
+        '#c11a9d',
+        '#e5da14',
+        '#b89220',
+        '#1c977a',
+        '#9a5a2b',
+      ]
+      let tasksName = courseTasks.map(i => {
+        return i.describes + '(' + i.course.name + ')'
+      })
+
+      let tasksScores = courseTasks.map(i => {
+        return i.sysGrade*100
+      })
+
+      option = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            crossStyle: {
+              color: '#999'
+            }
+          }
+        },
+        dataZoom: [
+          {
+            id: 'dataZoomX',
+            type: 'slider',
+            xAxisIndex: [0],
+            filterMode: 'filter'
+          }
+        ],
+        calculable: true,
+        title: {
+          text: '其支撑课程目标',
+          subtext: ''
+        },
+        xAxis: {
+          type: 'category',
+          data: tasksName,
+          axisLabel: {
+            interval: 0,
+            rotate: 40
+          }
+        },
+        yAxis: {
+          type: 'value',
+          max: 100
+        },
+        series: {
+          name: '成绩',
+          data: tasksScores,
+          type: 'bar',
+          itemStyle: {
+            normal: {
+              color: '#5e128d'
+            }
+          },
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(180,180,180,0.2)'
+          }
+        }
+      }
+      option && myChart.setOption(option)
+    },
+    setTargetChart(){
+      let chartDom = document.getElementById('targetPie');
+      let myChart = echarts.init(chartDom);
+      let option;
+      let courseTargets = this.targetChartForm.courseTargets
+      let dtataNames = []
+      let chartData = new Array(courseTargets.length)
+      for (let courseTarget of courseTargets) {
+        dtataNames.push(courseTarget.course.name)
+        chartData.push({
+          value: courseTarget.mix,
+          name: courseTarget.course.name
+        })
+      }
+      let courseTasks = this.targetChartForm.courseTasks
+      let tasksDta = new Array(courseTasks.length)
+      for (let courseTask of courseTasks) {
+        dtataNames.push(courseTask.describes)
+        tasksDta.push({
+          value: courseTask.mix,
+          name: courseTask.describes
+        })
+      }
+      option = {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
+        },
+        legend: {
+          data: dtataNames,
+          top: 'bottom'
+        },
+        series: [
+          {
+            name: '访问来源',
+            type: 'pie',
+            selectedMode: 'single',
+            radius: [0, '30%'],
+            label: {
+              position: 'inner',
+              fontSize: 14,
+            },
+            labelLine: {
+              show: false
+            },
+            data: chartData
+          },
+          {
+            name: '访问来源',
+            type: 'pie',
+            radius: ['45%', '60%'],
+            labelLine: {
+              length: 30,
+            },
+            label: {
+              formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
+              backgroundColor: '#F6F8FC',
+              borderColor: '#8C8D8E',
+              borderWidth: 1,
+              borderRadius: 4,
+
+              rich: {
+                a: {
+                  color: '#6E7079',
+                  lineHeight: 22,
+                  align: 'center'
+                },
+                hr: {
+                  borderColor: '#8C8D8E',
+                  width: '100%',
+                  borderWidth: 1,
+                  height: 0
+                },
+                b: {
+                  color: '#4C5058',
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                  lineHeight: 33
+                },
+                per: {
+                  color: '#fff',
+                  backgroundColor: '#4C5058',
+                  padding: [3, 4],
+                  borderRadius: 4
+                }
+              }
+            },
+            data: tasksDta
+          }
+        ]
+      };
+
+      option && myChart.setOption(option)
+    },
     refreshData() {
       const loadingInstance = Loading.service({
         background: 'rgba(0, 0, 0, 0.7)',
@@ -60,46 +291,76 @@ export default {
       }, res => {
         if (res.data.succ) {
           let data = res.data.data
-          let reqs = data.map(i => {
-            return i.name
-          })
-          let target1 = data.map(i => {
-            if(i.targets[0]){
-              return i.targets[0].sysGrade*100
-            }else {
-              return 0
+          let targetsName = []
+          let max = 0
+          for (let datum of data) {
+            let children = datum.targets
+            if(max < children.length){
+              max = children.length
             }
-          })
-          let target2 = data.map(i => {
-            if(i.targets[1]){
-              return i.targets[1].sysGrade*100
-            }else {
-              return 0
+            let childObj = []
+            for (const child of children) {
+              childObj.push({
+                value: child.id,
+                label: child.discribe
+              })
             }
-          })
-          let target3 = data.map(i => {
-            if(i.targets[2]){
-              return i.targets[2].sysGrade*100
-            }else {
-              return 0
+            this.options.push({
+              value: datum.id,
+              label: datum.name,
+              children: childObj
+            })
+          }
+          let series = new Array(max)
+          for (let j = 0; j < max; j++) {
+            series[j] = new Array()
+          }
+          for (let i = 0; i < data.length; i++) {
+            targetsName.push(data[i].name)
+            for (let j = 0; j < max; j++) {
+              if(data[i].targets[j]){
+                series[j].push((data[i].targets[j].sysGrade * 100).toFixed(2))
+              }else {
+                series[j].push(0)
+              }
             }
-          })
-          let target4 = data.map(i => {
-            if(i.targets[3]){
-              return i.targets[3].sysGrade*100
-            }else {
-              return 0
-            }
-          })
-          this.setChartData(reqs, target1, target2, target3, target4)
+          }
+          this.setChartData(targetsName, series)
         }
         this.loading = false
       })
     },
-    setChartData(targetsName, target1, target2, target3, target4) {
+    setChartData(targetsName, series) {
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)
       let option
+      let myseries = new Array(series.length)
+      let colors = [
+        '#199237',
+        '#196292',
+        '#c11a9d',
+        '#e5da14',
+        '#b89220',
+        '#1c977a',
+        '#9a5a2b',
+      ]
+      for (let i = 0; i< series.length ;  i++) {
+        myseries.push({
+          name: i+1,
+          data: series[i],
+          type: 'bar',
+          itemStyle: {
+            normal: {
+              color: colors[i]
+            }
+          },
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(180,180,180,0.2)'
+          }
+        })
+      }
+
       option = {
         tooltip: {
           trigger: 'axis',
@@ -118,14 +379,6 @@ export default {
             filterMode: 'filter'
           }
         ],
-        toolbox: {
-          show: true,
-          feature: {
-            magicType: {show: true, type: ['line', 'bar']},
-            restore: {show: true},
-            saveAsImage: {show: true}
-          }
-        },
         calculable: true,
         title: {
           text: '毕业要求成绩统计',
@@ -143,100 +396,7 @@ export default {
           type: 'value',
           max: 100
         },
-        series: [{
-          name: '指标点1',
-          data: target1,
-          type: 'bar',
-          itemStyle: {
-            normal: {
-              color: '#199237'
-            }
-          },
-          showBackground: true,
-          backgroundStyle: {
-            color: 'rgba(180,180,180,0.2)'
-          },
-          markPoint: {
-            data: [
-              {type: 'max', name: '最大值'}
-            ]
-          },
-          markLine: {
-            data: [
-              {type: 'average', name: '平均值'}
-            ]
-          }
-        }, {
-          name: '指标点2',
-          data: target2,
-          type: 'bar',
-          itemStyle: {
-            normal: {
-              color: '#6c1dc4'
-            }
-          },
-          showBackground: true,
-          backgroundStyle: {
-            color: 'rgba(180,180,180,0.2)'
-          },
-          markPoint: {
-            data: [
-              {type: 'max', name: '最大值'}
-            ]
-          },
-          markLine: {
-            data: [
-              {type: 'average', name: '平均值'}
-            ]
-          }
-        }, {
-          name: '指标点3',
-          data: target3,
-          type: 'bar',
-          itemStyle: {
-            normal: {
-              color: '#ac1b77'
-            }
-          },
-          showBackground: true,
-          backgroundStyle: {
-            color: 'rgba(180,180,180,0.2)'
-          },
-          markPoint: {
-            data: [
-              {type: 'max', name: '最大值'}
-            ]
-          },
-          markLine: {
-            data: [
-              {type: 'average', name: '平均值'}
-            ]
-          }
-        }, {
-          name: '指标点4',
-          data: target4,
-          type: 'bar',
-          itemStyle: {
-            normal: {
-              color: '#1b55ac'
-            }
-          },
-          showBackground: true,
-          backgroundStyle: {
-            color: 'rgba(180,180,180,0.2)'
-          },
-          markPoint: {
-            data: [
-              {type: 'max', name: '最大值'}
-            ]
-          },
-          markLine: {
-            data: [
-              {type: 'average', name: '平均值'}
-            ]
-          }
-        }
-        ]
+        series: myseries
       }
       option && myChart.setOption(option)
     },
@@ -252,12 +412,24 @@ export default {
   height: 830px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .05)
 }
-
 .historyCanvas {
   width: 100%;
   height: 700px;
   padding: 0;
   margin: 0;
+}
+.targetPie{
+  width: 800px;
+  height: 600px;
+  padding: 10px;
+  display: inline-block;
+}
+.targetBar{
+  margin-left: 50px;
+  width: 600px;
+  height: 600px;
+  padding: 10px;
+  display: inline-block;
 }
 </style>
 

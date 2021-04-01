@@ -20,4 +20,6 @@ public interface ICourseTaskService extends IService<CourseTask> {
     List<CourseTaskVo> voList(CourseTask courseTask);
 
     Boolean summaryCourseTask();
+
+    List<CourseTask> list(CourseTask courseTask);
 }

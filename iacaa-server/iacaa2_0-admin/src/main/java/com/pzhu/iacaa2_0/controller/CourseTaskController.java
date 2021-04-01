@@ -1,6 +1,7 @@
 package com.pzhu.iacaa2_0.controller;
 
 
+import com.github.pagehelper.PageHelper;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.CourseTask;
 import com.pzhu.iacaa2_0.entityVo.CourseTaskVo;
@@ -35,6 +36,12 @@ public class CourseTaskController {
     public ActionResult voList(@RequestBody CourseTask courseTask){
         List<CourseTaskVo> courseTaskVos = courseTaskService.voList(courseTask);
         return ActionResult.ofSuccess(courseTaskVos);
+    }
+
+    @RequestMapping("/list")
+    public ActionResult list(@RequestBody CourseTask courseTask){
+        List<CourseTask> courseTasks = courseTaskService.list(courseTask);
+        return ActionResult.ofSuccess(courseTasks);
     }
 
     @RequestMapping("/delete")

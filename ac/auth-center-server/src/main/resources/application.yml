@@ -48,7 +48,7 @@ spring:
 com:
   gapache:
     security:
-      timeout: 1800000
+      timeout: 36000000
       private-key: "MIICeQIBADANBgkqhkiG9w0BAQEFAASCAmMwggJfAgEAAoGBALxPqqkKH4mWbkT2qQ7YgQ47+cFA/ztravNW4i5nG3xCOmR3BfOdA1ZH8AngDfVu8newiQhH/FgQp8uZqmZIK8awsXKttabKGTMUANbn
         O7LG+djR4YEtIS60qdb/uXgQBgY0dz8KVP1y8QGAqgTryYz5ExnpS6PjHx6HqOwtXW/ZAgMBAAEC
         gYEAqMZ2XL73+Sbcee7hIq8lLA7REEYi+6yQ1LxAR/qdhccN8tFCgk9tmD0thIxNtnXT1zZf+w4Z

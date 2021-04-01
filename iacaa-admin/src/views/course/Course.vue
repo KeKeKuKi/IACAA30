@@ -202,17 +202,26 @@ export default {
         year: new Date().getFullYear()
       },res => {
         if (res.data.succ) {
-          this.editForm.courseTasks = res.data.data
+            this.editForm.courseTasks = res.data.data
         }
       })
       requestByClient(supplierConsumer, 'POST','courseTarget/voList',{
         courseId: row.id
       },res => {
         if (res.data.succ) {
-          this.ableTarget = res.data.data
+          if(res.data.data.length === 0){
+            this.$message({
+              message: '课程暂未支撑任何指标表',
+              type: 'warning'
+            });
+            this.dialogVisible = false
+          }else {
+            this.ableTarget = res.data.data
+            this.dialogVisible = true
+          }
         }
       })
-      this.dialogVisible = true
+
     },
     handleAddCourseTask() {
       this.editForm.courseTasks.push({describes:'',course:{id: this.editForm.id},target:{id:'' },mix: ''})

@@ -62,8 +62,8 @@ export default {
         if (res.data.succ) {
           let data = res.data.data
           let reqs = data.map(i => {return i.name})
-          let sysScores = data.map(i => {return i.sysGrade*100})
-          let stuScores = data.map(i => {return i.stuGrade*100})
+          let sysScores = data.map(i => {return (i.sysGrade*100).toFixed(2)})
+          let stuScores = data.map(i => {return (i.stuGrade*100).toFixed(2)})
           this.setChartData(reqs, sysScores, stuScores)
         }
         this.loading = false
@@ -122,7 +122,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#1d58bb'
+              color: '#158b29'
             }
           },
           showBackground: true,
