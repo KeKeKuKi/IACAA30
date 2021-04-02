@@ -16,7 +16,7 @@
       :title="targetChartForm.title"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
-      width="90%"
+      width="87%"
       @open="open"
       center
     >
@@ -77,7 +77,7 @@ export default {
         type: 'bar',
         itemStyle: {
           normal: {
-            color: '#196292'
+            color: '#2b5dd5'
           }
         },
         showBackground: true,
@@ -262,15 +262,21 @@ export default {
       console.log(courseTasks)
       for (let courseTask of courseTasks) {
         dtataNames.push(courseTask.describes)
+        let courseTaskMix = 0
+        for (let courseTarget of courseTargets) {
+          if(courseTask.course.id === courseTarget.course.id ){
+            courseTaskMix = courseTask.mix * courseTarget.mix
+          }
+        }
         tasksDta.push({
-          value: courseTask.mix,
+          value: courseTaskMix,
           name: courseTask.describes
         })
       }
       option = {
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b}: {c} ({d}%)'
+          formatter: '{a} <br/>{b} <br/>权重: {c} <br/>占比:({d}%)'
         },
         legend: {
           data: dtataNames,
@@ -432,7 +438,7 @@ export default {
 
 .targetBar {
   margin-left: 50px;
-  width: 600px;
+  width: 500px;
   height: 600px;
   padding: 10px;
   display: inline-block;

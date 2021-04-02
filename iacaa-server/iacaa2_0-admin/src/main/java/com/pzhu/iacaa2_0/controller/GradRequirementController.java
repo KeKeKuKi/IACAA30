@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gapache.security.annotation.AuthResource;
 import com.gapache.security.annotation.NeedAuth;
-import com.github.pagehelper.PageInfo;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.GradRequirement;
 import com.pzhu.iacaa2_0.entity.Target;
@@ -85,9 +84,15 @@ public class GradRequirementController{
     @RequestMapping("/voList")
     @AuthResource(scope = "voList", name = "毕业要求Vo列表")
     public ActionResult voList(@RequestBody GradRequirementVo vo) {
-//        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
         List<GradRequirementVo> list = gradRequirementService.voList(vo);
         return ActionResult.ofSuccess(list);
+    }
+
+    @RequestMapping("/getOne")
+    @AuthResource(scope = "getOne", name = "获取单个毕业要求")
+    public ActionResult getOne(@RequestBody GradRequirementVo vo) {
+        List<GradRequirementVo> list = gradRequirementService.voList(vo);
+        return list == null ? ActionResult.ofFail(500,"没有该数据") : ActionResult.ofSuccess(list.get(0));
     }
 
     @RequestMapping("/voListAll")

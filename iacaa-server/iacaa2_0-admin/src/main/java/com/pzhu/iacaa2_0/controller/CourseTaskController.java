@@ -44,6 +44,15 @@ public class CourseTaskController {
         return ActionResult.ofSuccess(courseTasks);
     }
 
+    @RequestMapping("/randomlist")
+    public ActionResult randomlist(){
+        CourseTask courseTask = new CourseTask();
+        courseTask.setYear(LocalDateTime.now().getYear());
+        courseTask.setStuGrade(0D);
+        List<CourseTask> courseTasks = courseTaskService.list(courseTask);
+        return ActionResult.ofSuccess(courseTasks);
+    }
+
     @RequestMapping("/delete")
     public ActionResult delete(@RequestBody CourseTask courseTask){
         boolean b = courseTaskService.removeById(courseTask.getId());

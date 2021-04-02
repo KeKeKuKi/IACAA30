@@ -48,4 +48,9 @@
         WHERE id in (select distinct(task_id) from t_check_link) and id = #{id}
     </select>
 
+    <select id="listByCourseTaskId" resultType="com.pzhu.iacaa2_0.entity.CheckLink" parameterType="java.lang.String">
+        select <include refid="Base_Column_List"></include>
+        from t_check_link a where task_id = #{id}
+    </select>
+
 </mapper>

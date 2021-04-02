@@ -38,6 +38,7 @@
                 </if>
             </trim>
         </where>
+        order by course_id
     </select>
 
 </mapper>

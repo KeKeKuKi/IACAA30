@@ -56,36 +56,24 @@ export default {
       })
     },
     getList() {
-      requestByClient(supplierConsumer, 'POST', 'course/voListAll', {
+      requestByClient(supplierConsumer, 'POST', 'courseTask/voList', {
         year: this.serchForm.year
       },res => {
         if (res.data.succ) {
           let data = res.data.data
-          let reqs = data.map(i => {return i.name})
+          let courseTasksName = data.map(i => {return i.course.name + ':' + i.describes})
           let sysScores = data.map(i => {
-            let score = 0
-            if(i.courseTasks){
-              for (let j = 0; j < i.courseTasks.length; j++) {
-                score = score + (i.courseTasks[j].sysGrade * i.courseTasks[j].mix)
-              }
-            }
-            return score.toFixed(3)*100
+            return i.sysGrade.toFixed(2)*100
           })
           let stuScores = data.map(i => {
-            let score = 0
-            if(i.courseTasks){
-              for (let j = 0; j < i.courseTasks.length; j++) {
-                score = score + (i.courseTasks[j].stuGrade * i.courseTasks[j].mix)
-              }
-            }
-            return score.toFixed(3)*100
+            return i.stuGrade.toFixed(2)*100
           })
-          this.setChartData(reqs, sysScores, stuScores)
+          this.setChartData(courseTasksName, sysScores, stuScores)
         }
         this.loading = false
       })
     },
-    setChartData(reqs, sysScores, stuScores) {
+    setChartData(names, sysScores, stuScores) {
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)
       let option
@@ -117,12 +105,12 @@ export default {
         },
         calculable: true,
         title: {
-          text: '毕业要求成绩统计',
+          text: '课程目标成绩对比分析',
           subtext: ''
         },
         xAxis: {
           type: 'category',
-          data: reqs,
+          data: names,
           axisLabel: {
             interval:0,
             rotate:50
@@ -138,7 +126,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#16a126'
+              color: '#317ed5'
             }
           },
           showBackground: true,
@@ -161,7 +149,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#601bac'
+              color: '#1a30a0'
             }
           },
           showBackground: true,

@@ -62,6 +62,9 @@
                 <if test="word != null and word !=''">
                     AND (name like CONCAT(CONCAT('%',#{word}),'%') or discrible like CONCAT(CONCAT('%',#{word}),'%'))
                 </if>
+                <if test="id != null and id !=''">
+                    AND id = #{id}
+                </if>
                 <if test="name != null and name !=''">
                     AND name = #{name}
                 </if>

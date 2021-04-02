@@ -27,6 +27,7 @@
         <module>support-cloud-sentinel</module>
         <module>support-cloud-stream-binder-rocketmq</module>
         <module>support-cloud-starter-stream-rocketmq</module>
+        <module>../vertx-web-demo</module>
     </modules>
 
     <!-- 基于spring-boot 2.3.3.RELEASE -->

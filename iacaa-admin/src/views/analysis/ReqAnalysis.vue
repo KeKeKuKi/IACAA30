@@ -2,22 +2,34 @@
   <div>
     <div class="historyLabel">
       <el-select v-model="serchForm.year" placeholder="选择事件" filterable clearable @change="getList()">
-        <el-option label="2021" value="2021" />
-        <el-option label="2020" value="2020" />
+        <el-option label="2021" value="2021"/>
+        <el-option label="2020" value="2020"/>
       </el-select>
       <span style="float: right;margin-right: 180px">
         <el-button type="primary" @click="refreshData">刷新数据</el-button>
       </span>
-      <div id="historyData" class="historyCanvas" />
+      <div id="historyData" class="historyCanvas"/>
     </div>
+
+    <el-dialog
+      :title="this.viewingReq.name"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      width="30%"
+      @open="open"
+      center
+    >
+      <span id="viewingReqBar" class="viewingReqBar"/>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import echarts from 'echarts'
-import { requestByClient } from '@/utils/HttpUtils'
-import { supplierConsumer } from '@/utils/HttpUtils'
-import { Loading } from 'element-ui'
+import {requestByClient} from '@/utils/HttpUtils'
+import {supplierConsumer} from '@/utils/HttpUtils'
+import {Loading} from 'element-ui'
+
 export default {
   name: "ReqAnalysis",
 
@@ -25,22 +37,121 @@ export default {
     return {
       serchForm: {
         year: new Date().getFullYear()
-      }
+      },
+      dialogVisible: false,
+      viewingReq: {}
     }
   },
   mounted() {
     this.getList()
   },
   methods: {
-    refreshData(){
+    open() {
+      this.$nextTick(() => {
+        this.setViewingChart()
+      })
+    },
+    setViewingChart() {
+      let chartDom = document.getElementById('viewingReqBar');
+      const myChart = echarts.init(chartDom)
+      let option
+      let targets = this.viewingReq.targets
+      let colors = [
+        '#199237',
+        '#196292',
+        '#c11a9d',
+        '#e5da14',
+        '#b89220',
+        '#1c977a',
+        '#9a5a2b',
+      ]
+
+
+      let names = targets.map(i => {
+        return i.discribe
+      })
+
+      let sysScores = targets.map(i => {
+        return (i.sysGrade * 100).toFixed(2)
+      })
+
+      let stuScores = targets.map(i => {
+        return (i.stuGrade * 100).toFixed(2)
+      })
+
+      option = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            crossStyle: {
+              color: '#999'
+            }
+          }
+        },
+        dataZoom: [
+          {
+            id: 'dataZoomX',
+            type: 'slider',
+            xAxisIndex: [0],
+            filterMode: 'filter'
+          }
+        ],
+        calculable: true,
+        title: {
+          text: '支撑该毕业要求的指标点成绩',
+          subtext: ''
+        },
+        xAxis: {
+          type: 'category',
+          data: names,
+          axisLabel: {
+            interval: 0,
+            rotate: 30
+          }
+        },
+        yAxis: {
+          type: 'value',
+          max: 100
+        },
+        series: [{
+          name: '系统成绩',
+          data: sysScores,
+          type: 'bar',
+          itemStyle: {
+            normal: {
+              color: '#1d5fac'
+            }
+          },
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(180,180,180,0.2)'
+          }
+        },{
+          name: '学生评价',
+          data: stuScores,
+          type: 'bar',
+          itemStyle: {
+            normal: {
+              color: '#b41d52'
+            }
+          },
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(180,180,180,0.2)'
+          }
+        }]
+      }
+      option && myChart.setOption(option)
+    },
+    refreshData() {
       const loadingInstance = Loading.service({
         background: 'rgba(0, 0, 0, 0.7)',
         text: '加载中，请稍后。。。',
         target: 'document.body',
         body: true
       })
-      requestByClient(supplierConsumer, 'POST', 'gradRequirement/summaryAll', {
-      },res => {
+      requestByClient(supplierConsumer, 'POST', 'gradRequirement/summaryAll', {}, res => {
         if (res.data.succ) {
           this.$message({
             message: '数据已刷新',
@@ -56,20 +167,27 @@ export default {
       })
     },
     getList() {
-      requestByClient(supplierConsumer, 'POST', 'gradRequirement/voList', {
+      requestByClient(supplierConsumer, 'POST', 'gradRequirement/list', {
         year: this.serchForm.year
-      },res => {
+      }, res => {
         if (res.data.succ) {
           let data = res.data.data
-          let reqs = data.map(i => {return i.name})
-          let sysScores = data.map(i => {return (i.sysGrade*100).toFixed(2)})
-          let stuScores = data.map(i => {return (i.stuGrade*100).toFixed(2)})
+          let reqs = data.map(i => {
+            return i.id + ':' + i.name
+          })
+          let sysScores = data.map(i => {
+            return (i.sysGrade * 100).toFixed(2)
+          })
+          let stuScores = data.map(i => {
+            return (i.stuGrade * 100).toFixed(2)
+          })
           this.setChartData(reqs, sysScores, stuScores)
         }
         this.loading = false
       })
     },
     setChartData(reqs, sysScores, stuScores) {
+      let vue = this
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)
       let option
@@ -94,9 +212,9 @@ export default {
         toolbox: {
           show: true,
           feature: {
-            magicType: { show: true, type: ['line', 'bar'] },
-            restore: { show: true },
-            saveAsImage: { show: true }
+            magicType: {show: true, type: ['line', 'bar']},
+            restore: {show: true},
+            saveAsImage: {show: true}
           }
         },
         calculable: true,
@@ -108,8 +226,8 @@ export default {
           type: 'category',
           data: reqs,
           axisLabel: {
-            interval:0,
-            rotate:40
+            interval: 0,
+            rotate: 40
           }
         },
         yAxis: {
@@ -122,7 +240,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#158b29'
+              color: '#843cd5'
             }
           },
           showBackground: true,
@@ -131,58 +249,78 @@ export default {
           },
           markPoint: {
             data: [
-              { type: 'max', name: '最大值' }
+              {type: 'max', name: '最大值'}
             ]
           },
           markLine: {
             data: [
-              { type: 'average', name: '平均值' }
+              {type: 'average', name: '平均值'}
             ]
           }
         }, {
-            name: '学生评价',
-            data: stuScores,
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                color: '#601bac'
-              }
-            },
-            showBackground: true,
-            backgroundStyle: {
-              color: 'rgba(180,180,180,0.2)'
-            },
-            markPoint: {
-              data: [
-                { type: 'max', name: '最大值' }
-              ]
-            },
-            markLine: {
-              data: [
-                { type: 'average', name: '平均值' }
-              ]
+          name: '学生评价',
+          data: stuScores,
+          type: 'bar',
+          itemStyle: {
+            normal: {
+              color: '#3c116c'
             }
+          },
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(180,180,180,0.2)'
+          },
+          markPoint: {
+            data: [
+              {type: 'max', name: '最大值'}
+            ]
+          },
+          markLine: {
+            data: [
+              {type: 'average', name: '平均值'}
+            ]
           }
+        }
         ]
       }
       option && myChart.setOption(option)
+      //点击事件
+      myChart.on('click', function (params) {
+        let po = params.name.indexOf(':')
+        vue.selectOneReq(parseInt(params.name.substring(0, po)))
+      });
     },
+    selectOneReq(id) {
+      requestByClient(supplierConsumer, 'POST', 'gradRequirement/getOne', {
+        id: id
+      }, res => {
+        this.viewingReq = res.data.data
+        this.dialogVisible = true
+      })
+    }
   }
 }
 </script>
 
 <style scoped>
-.historyLabel{
+.historyLabel {
   padding: 20px;
   margin: 20px;
   width: 97%;
   height: 830px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .05)
 }
-.historyCanvas{
+
+.historyCanvas {
   width: 100%;
   height: 700px;
   padding: 0;
   margin: 0;
+}
+.viewingReqBar{
+  width: 550px;
+  height: 600px;
+  padding: 10px;
+  display: inline-block;
 }
 </style>

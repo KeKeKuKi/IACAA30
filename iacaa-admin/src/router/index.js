@@ -48,13 +48,13 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/ReqAnalysis',
-    meta: { title: '数据分析', icon: 'chart', affix: true },
+    meta: { title: '年度数据分析', icon: 'chart', affix: true },
     children: [
       {
         path: 'ReqAnalysis',
         component: () => import('@/views/analysis/ReqAnalysis'),
         name: 'ReqAnalysis',
-        meta: { title: '毕业分析', icon: 'chart', affix: true }
+        meta: { title: '毕业要求', icon: 'chart', affix: true }
       },
       {
         path: 'TargetsAnalysis',
@@ -66,7 +66,7 @@ export const constantRoutes = [
         path: 'CourseAnalysis',
         component: () => import('@/views/analysis/CourseAnalysis'),
         name: 'CourseAnalysis',
-        meta: { title: '课程成绩', icon: 'chart', affix: true }
+        meta: { title: '课程目标', icon: 'chart', affix: true }
       }
     ]
   },

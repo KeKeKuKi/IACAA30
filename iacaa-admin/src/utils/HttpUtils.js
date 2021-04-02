@@ -36,6 +36,8 @@ UserServer.interceptors.response.use(response => {
 supplierConsumer.interceptors.response.use(response => {
   if(response.data.code === 10513){
     Message.error("Token已过期，或没有权限这样做，可以尝试重新登陆或联系管理员开通权限")
+  }else if(!response.data.succ){
+    Message.error(response.data.msg)
   }else {
     return response
   }

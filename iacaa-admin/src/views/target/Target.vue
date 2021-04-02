@@ -174,10 +174,10 @@ export default {
         year: this.serchForm.year
       }, res => {
         if (res.data.succ) {
-          this.tableData = res.data.data.list
-          this.total = res.data.data.total
-          this.pageSize = res.data.data.pageSize
-          this.currentPage = res.data.data.pageNum
+          this.tableData = res.data.data
+          // this.total = res.data.data.total
+          // this.pageSize = res.data.data.pageSize
+          // this.currentPage = res.data.data.pageNum
         }
       })
     },

@@ -18,5 +18,7 @@ public interface CheckLinkMapper extends BaseMapper<CheckLink> {
 
     List<CheckLink> list(CheckLinkVo vo);
 
+    List<CheckLink> listByCourseTaskId(String id);
+
     Integer summaryByCourseTaskId(Long id);
 }

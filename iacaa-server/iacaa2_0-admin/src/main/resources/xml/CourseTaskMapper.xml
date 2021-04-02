@@ -57,6 +57,7 @@
                 </if>
             </trim>
         </where>
+        order by course_id
     </select>
 
     <select id="list" parameterType="com.pzhu.iacaa2_0.entity.CourseTask" resultMap="BaseResultMap">
@@ -72,6 +73,15 @@
                 </if>
                 <if test="targetId != null and targetId !=''">
                     AND target_id = #{targetId}
+                </if>
+                <if test="year != null and year !=''">
+                    AND year = #{year}
+                </if>
+                <if test="sysGrade != null and sysGrade !=''">
+                    AND sys_grade = #{sysGrade}
+                </if>
+                <if test="stuGrade != null and stuGrade !=''">
+                    AND stu_grade = #{stuGrade}
                 </if>
             </trim>
         </where>
