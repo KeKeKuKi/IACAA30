@@ -26,12 +26,4 @@ public class BaseEntity {
      */
     @TableField("update_date")
     private LocalDateTime updateDate;
-//
-//    private int updateId;
-//
-//    private Date udpateTime;
-//
-//    private int createId;
-//
-//    private Date createTime;
 }

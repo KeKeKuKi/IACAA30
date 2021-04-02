@@ -33,6 +33,8 @@ UserServer.interceptors.response.use(response => {
   return response
 })
 
+
+//业务系统响应全局拦截器
 supplierConsumer.interceptors.response.use(response => {
   if(response.data.code === 10513){
     Message.error("Token已过期，或没有权限这样做，可以尝试重新登陆或联系管理员开通权限")
@@ -42,6 +44,13 @@ supplierConsumer.interceptors.response.use(response => {
     return response
   }
 })
+
+//业务系统请求全局拦截器
+supplierConsumer.interceptors.request.use(request => {
+  //设置请求方式为application/x-www-form-urlencoded后台参数容易获取
+  request.headers.contentType = 'application/x-www-form-urlencoded; charset=utf-8'
+})
+
 
 export function requestByClient(client, method, url, data, then) {
   client({
