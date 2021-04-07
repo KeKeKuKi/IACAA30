@@ -29,4 +29,9 @@ public class CheckLinkServiceImpl extends ServiceImpl<CheckLinkMapper, CheckLink
     public Boolean summaryByCourseTaskID(Long id) {
         return baseMapper.summaryByCourseTaskId(id) == null;
     }
+
+    @Override
+    public List<CheckLink> listBySourseTask(Long id) {
+        return baseMapper.listBySourseTask(id);
+    }
 }

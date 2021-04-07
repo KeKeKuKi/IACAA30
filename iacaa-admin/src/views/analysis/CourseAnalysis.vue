@@ -2,40 +2,37 @@
   <div>
     <div class="historyLabel">
       <el-select v-model="serchForm.year" placeholder="选择时间" filterable clearable @change="getList">
-        <el-option label="2021" value="2021" />
-        <el-option label="2020" value="2020" />
+        <el-option label="2021" value="2021"/>
+        <el-option label="2020" value="2020"/>
       </el-select>
       <span style="float: right;margin-right: 180px">
         <el-button type="primary" @click="refreshData">刷新数据</el-button>
       </span>
-      <div id="historyData" class="historyCanvas" />
+      <div id="historyData" class="historyCanvas"/>
     </div>
     <el-dialog
       :title="viewingCourseTask.name"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
-      width="30%"
+      width="75%"
       @open="open"
       center
     >
-      <div>
-        <span>
-          <div id="stuTaskScoreBar" class="stuElinkScoreBar"></div>
-        </span>
-        <span>
-          <div id="sysElinkMixBar" class="sysElinkMixBar"></div>
-          <div id="sysElinkScoreBar" class="sysElinkScoreBar"></div>
-        </span>
+      <div class="elinkChart">
+        <div id="stuTaskScoreBar" class="stuElinkScoreBar"></div>
+        <div id="sysElinkMixPie" class="sysElinkMixPie"></div>
       </div>
+      <div id="sysElinkScoreBar" class="sysElinkScoreBar"></div>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import echarts from 'echarts'
-import { requestByClient } from '@/utils/HttpUtils'
-import { supplierConsumer } from '@/utils/HttpUtils'
-import { Loading } from 'element-ui'
+import {requestByClient} from '@/utils/HttpUtils'
+import {supplierConsumer} from '@/utils/HttpUtils'
+import {Loading} from 'element-ui'
+
 export default {
   name: "CourseAnalysis",
   data() {
@@ -51,15 +48,14 @@ export default {
     this.getList()
   },
   methods: {
-    refreshData(){
+    refreshData() {
       const loadingInstance = Loading.service({
         background: 'rgba(0, 0, 0, 0.7)',
         text: '加载中，请稍后。。。',
         target: 'document.body',
         body: true
       })
-      requestByClient(supplierConsumer, 'POST', 'courseTask/summaryCourseTask', {
-      },res => {
+      requestByClient(supplierConsumer, 'POST', 'courseTask/summaryCourseTask', {}, res => {
         if (res.data.succ) {
           this.$message({
             message: '数据已刷新',
@@ -77,15 +73,17 @@ export default {
     getList() {
       requestByClient(supplierConsumer, 'POST', 'courseTask/voList', {
         year: this.serchForm.year
-      },res => {
+      }, res => {
         if (res.data.succ) {
           let data = res.data.data
-          let courseTasksName = data.map(i => {return (i.id + ':(' + i.course.name + ')' + i.describes)})
+          let courseTasksName = data.map(i => {
+            return (i.id + ':(' + i.course.name + ')' + i.describes)
+          })
           let sysScores = data.map(i => {
-            return i.sysGrade ? (i.sysGrade).toFixed(2)*100 : 0
+            return i.sysGrade ? (i.sysGrade).toFixed(2) * 100 : 0
           })
           let stuScores = data.map(i => {
-            return i.stuGrade ? (i.stuGrade).toFixed(2)*100 : 0
+            return i.stuGrade ? (i.stuGrade).toFixed(2) * 100 : 0
           })
           this.setChartData(courseTasksName, sysScores, stuScores)
         }
@@ -118,9 +116,9 @@ export default {
         toolbox: {
           show: true,
           feature: {
-            magicType: { show: true, type: ['line', 'bar'] },
-            restore: { show: true },
-            saveAsImage: { show: true }
+            magicType: {show: true, type: ['line', 'bar']},
+            restore: {show: true},
+            saveAsImage: {show: true}
           }
         },
         calculable: true,
@@ -132,8 +130,8 @@ export default {
           type: 'category',
           data: names,
           axisLabel: {
-            interval:0,
-            rotate:50
+            interval: 0,
+            rotate: 50
           }
         },
         yAxis: {
@@ -146,7 +144,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#317ed5'
+              color: '#47059a'
             }
           },
           showBackground: true,
@@ -155,12 +153,12 @@ export default {
           },
           markPoint: {
             data: [
-              { type: 'max', name: '最大值' }
+              {type: 'max', name: '最大值'}
             ]
           },
           markLine: {
             data: [
-              { type: 'average', name: '平均值' }
+              {type: 'average', name: '平均值'}
             ]
           }
         }, {
@@ -169,7 +167,7 @@ export default {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: '#1a30a0'
+              color: '#23004c'
             }
           },
           showBackground: true,
@@ -178,12 +176,12 @@ export default {
           },
           markPoint: {
             data: [
-              { type: 'max', name: '最大值' }
+              {type: 'max', name: '最大值'}
             ]
           },
           markLine: {
             data: [
-              { type: 'average', name: '平均值' }
+              {type: 'average', name: '平均值'}
             ]
           }
         }
@@ -196,35 +194,205 @@ export default {
         vue.selectOneCourseTask(parseInt(params.name.substring(0, po)))
       });
     },
-    selectOneCourseTask(id){
-      requestByClient(supplierConsumer, 'POST', 'course/getOne', {
+    selectOneCourseTask(id) {
+      requestByClient(supplierConsumer, 'POST', 'courseTask/getOne', {
         id: id
       }, res => {
-        this.viewingReq = res.data.data
+        this.viewingCourseTask = res.data.data
         this.dialogVisible = true
       })
     },
     open() {
       this.$nextTick(() => {
         this.setStuTaskScoreBar()
+        this.setsysElinkMixPie()
       })
     },
+    setStuTaskScoreBar() {
+      requestByClient(supplierConsumer, 'POST', 'stuEvaluation/statisticsByCourseTaskId', {
+        id: this.viewingCourseTask.id
+      }, res => {
+        let data = res.data.data
+        let options = ['很差','差','一般','好','很好']
+        let nams = data.map(i => {
+          return options[i.score - 1]
+        })
+        let counts = data.map(i => {
+          return i.count
+        })
+        let chartDom1 = document.getElementById('stuTaskScoreBar');
+        let myChart1 = echarts.init(chartDom1);
+        let option1;
+        option1 = {
+          title: {
+            text: '学生评价成绩分布',
+            subtext: ''
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow'
+            }
+          },
+          legend: {
+            data: ['2012年']
+          },
+          xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01]
+          },
+          yAxis: {
+            type: 'category',
+            data: nams
+          },
+          series: [
+            {
+              name: '2011年',
+              type: 'bar',
+              data: counts,
+              itemStyle: {
+                normal: {
+                  color: '#017180'
+                }
+              },
+            }
+          ]
+        };
+        option1 && myChart1.setOption(option1);
+      })
+    },
+    setsysElinkMixPie() {
+      requestByClient(supplierConsumer, 'POST', 'checkLink/listBySourseTask', {
+        id: this.viewingCourseTask.id
+      }, res => {
+        let data = res.data.data
+        let nams = data.map(i => {
+          return i.name
+        })
+        let counts = data.map(i => {
+          return ((i.averageScore / i.targetScore) * 100).toFixed(2)
+        })
+        let chartDom1 = document.getElementById('sysElinkScoreBar');
+        let myChart1 = echarts.init(chartDom1);
+        let option1;
+        option1 = {
+          title: {
+            text: '考核环节成绩分布',
+            subtext: ''
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow'
+            }
+          },
+          legend: {
+            data: ['2012年']
+          },
+          yAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01]
+          },
+          xAxis: {
+            type: 'category',
+            data: nams
+          },
+          series: [
+            {
+              name: '2011年',
+              type: 'bar',
+              data: counts,
+              itemStyle: {
+                normal: {
+                  color: '#32006a'
+                }
+              },
+            }
+          ]
+        };
+        option1 && myChart1.setOption(option1);
+
+
+        let chartDom2 = document.getElementById('sysElinkMixPie');
+        let myChart2 = echarts.init(chartDom2);
+        let option2;
+        let pieData = data.map(i => {
+          return {
+            value: i.mix,
+            name: i.name
+          }
+        })
+
+        option2 = {
+          title: {
+            text: '此课程目标各考核环节权重',
+            subtext: '',
+            left: 'center'
+          },
+          tooltip: {
+            trigger: 'item'
+          },
+          legend: {
+            orient: 'vertical',
+            left: 'left',
+          },
+          series: [
+            {
+              name: '',
+              type: 'pie',
+              radius: '50%',
+              data: pieData,
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
+        };
+
+        option2 && myChart2.setOption(option2);
+      })
+    }
   }
 }
 </script>
 
 <style scoped>
-.historyLabel{
+.historyLabel {
   padding: 20px;
   margin: 20px;
   width: 97%;
   height: 830px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .05)
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .05);
 }
-.historyCanvas{
+
+.historyCanvas {
   width: 100%;
-  height: 700px;
-  padding: 0;
-  margin: 0;
+  height: 90%;
 }
+
+.elinkChart {
+  display: inline-block;
+  width: 60%;
+}
+
+.stuElinkScoreBar {
+  width: 100%;
+  height: 240px;
+}
+
+.sysElinkMixPie {
+  width: 100%;
+  height: 370px;
+}
+
+.sysElinkScoreBar {
+  display: inline-block;
+  width: 40%;
+  height: 600px;
+}
+
 </style>

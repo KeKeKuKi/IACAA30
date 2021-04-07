@@ -20,4 +20,5 @@ public interface ICheckLinkService extends IService<CheckLink> {
 
     Boolean summaryByCourseTaskID(Long id);
 
+    List<CheckLink> listBySourseTask(Long id);
 }

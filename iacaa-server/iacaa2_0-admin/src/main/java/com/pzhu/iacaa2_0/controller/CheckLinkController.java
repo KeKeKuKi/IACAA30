@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.CheckLink;
+import com.pzhu.iacaa2_0.entity.CourseTask;
 import com.pzhu.iacaa2_0.entityVo.CheckLinkVo;
 import com.pzhu.iacaa2_0.service.ICheckLinkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,12 @@ public class CheckLinkController {
     @RequestMapping("/list")
     public ActionResult list(@RequestBody CheckLinkVo vo) throws Exception{
         List<CheckLink> list = checkLinkService.list(vo);
+        return ActionResult.ofSuccess(list);
+    }
+
+    @RequestMapping("/listBySourseTask")
+    public ActionResult listBySourseTask(@RequestBody CourseTask courseTask) throws Exception{
+        List<CheckLink> list = checkLinkService.listBySourseTask(courseTask.getId());
         return ActionResult.ofSuccess(list);
     }
 
