@@ -1,12 +1,12 @@
 <template>
-  <div :style="backgroundDiv">
+  <div>
     <div style="width: 90%;margin-left: 5%;text-align: left">
       <br>
-      <div style="color: #001742;font-size: 22px">欢迎来到攀枝花学院学生毕业要求达成评价及分析系统</div>
+      <div style="color: #47033c;font-size: 22px">欢迎来到攀枝花学院学生毕业要求达成评价及分析系统</div>
       <br>
-      <div style="color: #070153;font-size: 18px">下面您将作为本届毕业生为统计本届学生毕业要求达成度做出重要贡献，您可能需要花费三分钟完成此调查问卷，请务必认真填写！</div>
+      <div style="color: #343434;font-size: 18px">下面您将作为本届毕业生为统计本届学生毕业要求达成度做出重要贡献，您可能需要花费几分钟完成此调查问卷，请务必认真评价！</div>
       <br>
-      <div style="color: #5e5e5e;font-size: 16px">您可以完成问卷后继续作答，我们将自动为您生成新的提问！</div>
+      <div style="color: #7b7b7b;font-size: 16px">您完成问卷后可以继续作答，我们将自动为您生成新的提问！</div>
       <hr>
       <br>
       <br>
@@ -51,13 +51,13 @@ export default {
   name: "CourseTaskQuestionnaire",
   data() {
     return {
-      backgroundDiv: {
-        backgroundImage: 'url(' + require('@/assets/images/bac.jpg') + ')',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: '100% 100%',
-        width: '100%',
-        height: '100%',
-      },
+      // backgroundDiv: {
+      //   backgroundImage: 'url(' + require('@/assets/images/bac.jpg') + ')',
+      //   backgroundRepeat: 'no-repeat',
+      //   backgroundSize: '100% 100%',
+      //   width: '100%',
+      //   height: '100%',
+      // },
       value: '',
       progress: 0,
       questionnaireForm: {

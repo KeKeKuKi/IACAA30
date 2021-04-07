@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="historyLabel">
-      <el-select v-model="serchForm.year" placeholder="选择事件" filterable clearable @change="getList()">
+      <el-select v-model="serchForm.year" placeholder="选择时间" filterable clearable @change="getList">
         <el-option label="2021" value="2021" />
         <el-option label="2020" value="2020" />
       </el-select>
@@ -10,6 +10,24 @@
       </span>
       <div id="historyData" class="historyCanvas" />
     </div>
+    <el-dialog
+      :title="viewingCourseTask.name"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      width="30%"
+      @open="open"
+      center
+    >
+      <div>
+        <span>
+          <div id="stuTaskScoreBar" class="stuElinkScoreBar"></div>
+        </span>
+        <span>
+          <div id="sysElinkMixBar" class="sysElinkMixBar"></div>
+          <div id="sysElinkScoreBar" class="sysElinkScoreBar"></div>
+        </span>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -20,9 +38,10 @@ import { supplierConsumer } from '@/utils/HttpUtils'
 import { Loading } from 'element-ui'
 export default {
   name: "CourseAnalysis",
-
   data() {
     return {
+      viewingCourseTask: {},
+      dialogVisible: false,
       serchForm: {
         year: new Date().getFullYear()
       }
@@ -61,7 +80,7 @@ export default {
       },res => {
         if (res.data.succ) {
           let data = res.data.data
-          let courseTasksName = data.map(i => {return i.course.name + ':' + i.describes})
+          let courseTasksName = data.map(i => {return (i.id + ':(' + i.course.name + ')' + i.describes)})
           let sysScores = data.map(i => {
             return i.sysGrade ? (i.sysGrade).toFixed(2)*100 : 0
           })
@@ -74,6 +93,7 @@ export default {
       })
     },
     setChartData(names, sysScores, stuScores) {
+      let vue = this
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)
       let option
@@ -170,6 +190,24 @@ export default {
         ]
       }
       option && myChart.setOption(option)
+      //点击事件
+      myChart.on('click', function (params) {
+        let po = params.name.indexOf(':')
+        vue.selectOneCourseTask(parseInt(params.name.substring(0, po)))
+      });
+    },
+    selectOneCourseTask(id){
+      requestByClient(supplierConsumer, 'POST', 'course/getOne', {
+        id: id
+      }, res => {
+        this.viewingReq = res.data.data
+        this.dialogVisible = true
+      })
+    },
+    open() {
+      this.$nextTick(() => {
+        this.setStuTaskScoreBar()
+      })
     },
   }
 }

@@ -135,15 +135,14 @@ export const constantRoutes = [
     path: '/Questionnaire',
     component: Main,
     redirect: '/Questionnaire',
-    meta: { title: '调查问卷', icon: 'list', affix: true },
     children: [
       {
         path: 'CourseTaskQuestionnaire',
         component: () => import('@/views/questionnaire/CourseTaskQuestionnaire'),
         name: 'CourseTaskQuestionnaire',
-        meta: { title: '调查问卷', icon: 'list', affix: true }
       }
-    ]
+    ],
+    hidden: true
   },
   {
     path: '/User',

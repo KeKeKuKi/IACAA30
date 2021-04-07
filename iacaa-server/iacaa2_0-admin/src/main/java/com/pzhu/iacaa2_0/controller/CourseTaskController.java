@@ -1,6 +1,7 @@
 package com.pzhu.iacaa2_0.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.CourseTask;
@@ -46,6 +47,26 @@ public class CourseTaskController {
     @RequestMapping("/list")
     public ActionResult list(@RequestBody CourseTask courseTask){
         List<CourseTask> courseTasks = courseTaskService.list(courseTask);
+        return ActionResult.ofSuccess(courseTasks);
+    }
+
+    @RequestMapping("/getOne")
+    public ActionResult getOne(@RequestBody CourseTask courseTask){
+        QueryWrapper<CourseTask> queryWrapper = new QueryWrapper<CourseTask>();
+        if(courseTask.getId() != null){
+            queryWrapper.eq("id",courseTask.getId());
+        }
+        if(courseTask.getCourseId() != null){
+            queryWrapper.eq("course_id",courseTask.getCourseId());
+        }
+        if(courseTask.getTargetId() != null){
+            queryWrapper.eq("target_id",courseTask.getTargetId());
+        }
+        if(courseTask.getYear() != null){
+            queryWrapper.eq("year",courseTask.getYear());
+        }
+        CourseTask courseTasks = courseTaskService.getOne(queryWrapper);
+
         return ActionResult.ofSuccess(courseTasks);
     }
 

@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">学生毕业要求达成度评价及分析系统</h3>
+        <h3 class="title">学生毕业要求达成评价及分析系统v2.0</h3>
       </div>
 
       <el-form-item prop="username">
@@ -53,9 +53,9 @@
           <span />
         </div>
 
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
-          或使用以下登录
-        </el-button>
+<!--        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">-->
+<!--          或使用以下登录-->
+<!--        </el-button>-->
       </div>
     </el-form>
 
@@ -255,14 +255,17 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
+$bg: #720c64;
 $dark_gray:#889aa4;
-$light_gray:#eee;
+$light_gray: #ffffff;
 
 .login-container {
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  background:-webkit-linear-gradient(#37087d, #6c0274);
+  background: -o-linear-gradient(#37087d, #6c0274); /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(#37087d, #6c0274); /* Firefox 3.6 - 15 */
+  background: linear-gradient(#37087d, #6c0274); /* 标准的语法 */
   overflow: hidden;
 
   .login-form {
@@ -270,7 +273,8 @@ $light_gray:#eee;
     width: 520px;
     max-width: 100%;
     padding: 160px 35px 0;
-    margin: 0 auto;
+    margin-top: 8%;
+    margin-left: 35%;
     overflow: hidden;
   }
 
@@ -299,7 +303,7 @@ $light_gray:#eee;
 
     .title {
       font-size: 26px;
-      color: $light_gray;
+      color: #ffffff;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;

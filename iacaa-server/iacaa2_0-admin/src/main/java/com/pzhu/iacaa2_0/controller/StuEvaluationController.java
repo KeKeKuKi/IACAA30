@@ -6,6 +6,7 @@ import com.pzhu.iacaa2_0.entity.CourseTask;
 import com.pzhu.iacaa2_0.entity.StuEvaluation;
 import com.pzhu.iacaa2_0.entityVo.CourseTaskVo;
 import com.pzhu.iacaa2_0.entityVo.EvaluationsList;
+import com.pzhu.iacaa2_0.entityVo.StuEvaluationStatisticsVo;
 import com.pzhu.iacaa2_0.entityVo.StuEvaluationVo;
 import com.pzhu.iacaa2_0.service.ICourseTaskService;
 import com.pzhu.iacaa2_0.service.IStuEvaluationService;
@@ -63,6 +64,12 @@ public class StuEvaluationController {
         });
         boolean b = stuEvaluationService.saveBatch(stuEvaluations);
         return b ? ActionResult.ofSuccess() : ActionResult.ofFail("保存失败");
+    }
+
+    @RequestMapping("statisticsByCourseTaskId")
+    public ActionResult statisticsByCourseTaskId (@RequestBody CourseTask courseTask){
+        List<StuEvaluationStatisticsVo> stuEvaluationStatisticsVos = stuEvaluationService.statisticsByCourseTaskId(courseTask.getId());
+        return ActionResult.ofSuccess(stuEvaluationStatisticsVos);
     }
 
 }

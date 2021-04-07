@@ -19,4 +19,8 @@
         course_task, ip, stu_no, score, created_date, update_date
     </sql>
 
+    <select id="statisticsByCourseTaskId" parameterType="java.lang.Long" resultType="com.pzhu.iacaa2_0.entityVo.StuEvaluationStatisticsVo">
+        SELECT score,count(id) count FROM `t_stu_evaluation` WHERE course_task = #{id} GROUP BY score
+    </select>
+
 </mapper>
