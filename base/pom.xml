@@ -27,7 +27,6 @@
         <module>support-cloud-sentinel</module>
         <module>support-cloud-stream-binder-rocketmq</module>
         <module>support-cloud-starter-stream-rocketmq</module>
-        <module>../vertx-web-demo</module>
     </modules>
 
     <!-- 基于spring-boot 2.3.3.RELEASE -->
@@ -201,11 +200,6 @@
                 <groupId>com.alibaba.boot</groupId>
                 <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${dubbo.spring.boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>dubbo-registry-nacos</artifactId>
-                <version>${dubbo.nacos.version}</version>
             </dependency>
             <!-- 指定 boot mybatis -->
             <dependency>

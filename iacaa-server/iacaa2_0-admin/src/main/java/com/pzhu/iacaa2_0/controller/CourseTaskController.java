@@ -4,8 +4,10 @@ package com.pzhu.iacaa2_0.controller;
 import com.github.pagehelper.PageHelper;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.CourseTask;
+import com.pzhu.iacaa2_0.entity.StuEvaluation;
 import com.pzhu.iacaa2_0.entityVo.CourseTaskVo;
 import com.pzhu.iacaa2_0.service.ICourseTaskService;
+import com.pzhu.iacaa2_0.service.IStuEvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,9 @@ public class CourseTaskController {
     @Autowired
     ICourseTaskService courseTaskService;
 
+    @Autowired
+    IStuEvaluationService stuEvaluationService;
+
     @RequestMapping("/voList")
     public ActionResult voList(@RequestBody CourseTask courseTask){
         List<CourseTaskVo> courseTaskVos = courseTaskService.voList(courseTask);
@@ -48,8 +53,8 @@ public class CourseTaskController {
     public ActionResult randomlist(){
         CourseTask courseTask = new CourseTask();
         courseTask.setYear(LocalDateTime.now().getYear());
-        courseTask.setStuGrade(0D);
-        List<CourseTask> courseTasks = courseTaskService.list(courseTask);
+        int randomSize = 4;
+        List<CourseTaskVo> courseTasks = courseTaskService.randomlist(courseTask,randomSize);
         return ActionResult.ofSuccess(courseTasks);
     }
 

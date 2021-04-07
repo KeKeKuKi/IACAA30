@@ -22,4 +22,7 @@ public interface ICourseTaskService extends IService<CourseTask> {
     Boolean summaryCourseTask();
 
     List<CourseTask> list(CourseTask courseTask);
+
+    List<CourseTaskVo> randomlist(CourseTask courseTask, int randomSize);
+
 }

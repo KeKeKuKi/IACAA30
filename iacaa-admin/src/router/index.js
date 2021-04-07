@@ -4,6 +4,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+import Main from '@/App'
 
 /* Router Modules */
 
@@ -127,6 +128,20 @@ export const constantRoutes = [
         component: () => import('@/views/score/CheckLinkScore'),
         name: 'CheckLinkScore',
         meta: { title: '编辑成绩', icon: 'list', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/Questionnaire',
+    component: Main,
+    redirect: '/Questionnaire',
+    meta: { title: '调查问卷', icon: 'list', affix: true },
+    children: [
+      {
+        path: 'CourseTaskQuestionnaire',
+        component: () => import('@/views/questionnaire/CourseTaskQuestionnaire'),
+        name: 'CourseTaskQuestionnaire',
+        meta: { title: '调查问卷', icon: 'list', affix: true }
       }
     ]
   },

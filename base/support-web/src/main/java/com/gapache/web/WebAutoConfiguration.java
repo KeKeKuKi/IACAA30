@@ -76,6 +76,7 @@ public class WebAutoConfiguration {
                         jsonResult = JsonResult.of(SystemError.SERVER_AUTHORITY);
                     } else {
                         jsonResult = JsonResult.of(SystemError.SERVER_EXCEPTION);
+                        log.error(e.getMessage());
                     }
                 } else {
                     log.error("{}.{}发生未知异常:", request.getMethod(), request.getRequestURI(), e);

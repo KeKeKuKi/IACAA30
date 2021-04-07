@@ -351,7 +351,7 @@ export default {
         target: 'document.body',
         body: true
       })
-      requestByClient(supplierConsumer, 'POST', 'gradRequirement/summaryAll', {}, res => {
+      requestByClient(supplierConsumer, 'POST', 'courseTask/summaryStuScore', {}, res => {
         if (res.data.succ) {
           this.$message({
             message: '数据已刷新',

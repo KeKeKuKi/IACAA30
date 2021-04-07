@@ -1,27 +1,27 @@
 import axios from 'axios'
 import { getToken } from '@/utils/auth'
 import { Message } from 'element-ui'
+
+const devServer = 'http://localhost:19999/'
+// const devServer = 'http://dev.51ishare.com:8182/'
+
 export const supplierConsumer = axios.create({
-  baseURL: 'http://localhost:19999/Iacaa20Server',
-  // baseURL: 'http://dev.51ishare.com:8182/',
+  baseURL: devServer + 'Iacaa20Server',
   withCredentials: false
 })
 
 export const authCenterServer = axios.create({
-  baseURL: 'http://localhost:19999/auth-center-server',
-  // baseURL: 'http://dev.51ishare.com:8182/',
+  baseURL: devServer + 'auth-center-server',
   withCredentials: false
 })
 
 export const UserServer = axios.create({
-  baseURL: 'http://localhost:19999/user-server',
-  // baseURL: 'http://dev.51ishare.com:8182/',
+  baseURL: devServer + 'user-server',
   withCredentials: false
 })
 
 export const AuthServer = axios.create({
-  baseURL: 'http://localhost:19999/auth-center-server',
-  // baseURL: 'http://dev.51ishare.com:8182/',
+  baseURL: devServer + 'auth-center-server',
   withCredentials: false
 })
 
@@ -45,11 +45,12 @@ supplierConsumer.interceptors.response.use(response => {
   }
 })
 
-//业务系统请求全局拦截器
-supplierConsumer.interceptors.request.use(request => {
-  //设置请求方式为application/x-www-form-urlencoded后台参数容易获取
-  request.headers.contentType = 'application/x-www-form-urlencoded; charset=utf-8'
-})
+// //业务系统请求全局拦截器
+// supplierConsumer.interceptors.request.use(request => {
+//   //设置请求方式为application/x-www-form-urlencoded后台参数容易获取
+//
+//   return request
+// })
 
 
 export function requestByClient(client, method, url, data, then) {

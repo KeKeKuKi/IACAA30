@@ -8,6 +8,7 @@ import com.pzhu.iacaa2_0.mapper.CourseTaskMapper;
 import com.pzhu.iacaa2_0.service.ICheckLinkService;
 import com.pzhu.iacaa2_0.service.ICourseTaskService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,7 @@ public class CourseTaskServiceImpl extends ServiceImpl<CourseTaskMapper, CourseT
         List<CourseTask> courseTasks = baseMapper.selectList(courseTaskQueryWrapper);
         courseTasks.forEach(i -> {
             checkLinkService.summaryByCourseTaskID(i.getId());
+            baseMapper.summaryStuScore(i.getId());
         });
         return true;
     }
@@ -50,4 +52,10 @@ public class CourseTaskServiceImpl extends ServiceImpl<CourseTaskMapper, CourseT
     public List<CourseTask> list(CourseTask courseTask) {
         return baseMapper.list(courseTask);
     }
+
+    @Override
+    public List<CourseTaskVo> randomlist(CourseTask courseTask, int randomSize) {
+        return baseMapper.randomlist(courseTask,randomSize);
+    }
+
 }

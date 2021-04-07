@@ -59,7 +59,7 @@ public class CodeGenerator {
         gc.setAuthor("ZhaoZezhong");
         //路径,默认为 D:\
         String projectPath = System.getProperty("user.dir");
-        gc.setOutputDir(projectPath + "/iacaa2_0-admin/src/main/java");
+        gc.setOutputDir(projectPath + "/iacaa-server/iacaa2_0-admin/src/main/java");
         // XML ResultMap
         gc.setBaseResultMap(true);
         // XML column List
@@ -90,7 +90,7 @@ public class CodeGenerator {
         //is_xxx 去除is_ 前缀
         strategy.setEntityBooleanColumnRemoveIsPrefix(false);
         //去掉表名前缀
-//        strategy.setTablePrefix("t_");
+        strategy.setTablePrefix("t_");
 
         //设置继承基类
         strategy.setSuperEntityClass("com.pzhu.iacaa2_0.base.BaseEntity");

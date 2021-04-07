@@ -39,7 +39,7 @@ export default {
         target: 'document.body',
         body: true
       })
-      requestByClient(supplierConsumer, 'POST', 'gradRequirement/summaryAll', {
+      requestByClient(supplierConsumer, 'POST', 'courseTask/summaryCourseTask', {
       },res => {
         if (res.data.succ) {
           this.$message({
@@ -63,10 +63,10 @@ export default {
           let data = res.data.data
           let courseTasksName = data.map(i => {return i.course.name + ':' + i.describes})
           let sysScores = data.map(i => {
-            return i.sysGrade.toFixed(2)*100
+            return i.sysGrade ? (i.sysGrade).toFixed(2)*100 : 0
           })
           let stuScores = data.map(i => {
-            return i.stuGrade.toFixed(2)*100
+            return i.stuGrade ? (i.stuGrade).toFixed(2)*100 : 0
           })
           this.setChartData(courseTasksName, sysScores, stuScores)
         }
