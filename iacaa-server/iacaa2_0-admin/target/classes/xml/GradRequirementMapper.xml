@@ -20,12 +20,15 @@
     </sql>
 
 
-    <select id="getByEntity" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="listByVo" parameterType="com.pzhu.iacaa2_0.entityVo.GradRequirementVo" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_grad_requirement
         <where>
             <trim prefixOverrides="AND">
+                <if test="word != null and word !=''">
+                    AND name like CONCAT(CONCAT('%',#{word}),'%')
+                </if>
                 <if test="name != null and name !=''">
                     AND name = #{name}
                 </if>
@@ -82,9 +85,13 @@
     <update id="summaryByReqId" parameterType="java.lang.Long">
         UPDATE t_grad_requirement
         set sys_grade =  (
-            SELECT AVG(sys_grade)
-            from t_target
-            WHERE req_id = #{id})
+                SELECT AVG(sys_grade)
+                from t_target
+                WHERE req_id = #{id}),
+            stu_grade =  (
+                SELECT AVG(stu_grade)
+                from t_target
+                WHERE req_id = #{id})
         WHERE id in (select distinct(req_id) from t_target) and id = #{id}
     </update>
 

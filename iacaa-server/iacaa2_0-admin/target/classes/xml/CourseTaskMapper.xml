@@ -43,7 +43,7 @@
             SELECT AVG(score)/5
             FROM `t_stu_evaluation`
             WHERE course_task = #{courseTaskId})
-        WHERE id = #{courseTaskId}
+        WHERE id = #{courseTaskId} and id in (select distinct(course_task) from t_stu_evaluation)
     </update>
 
     <select id="randomlist" resultMap="voMap">
@@ -77,7 +77,7 @@
 
 
 
-    <select id="voList" parameterType="com.pzhu.iacaa2_0.entity.CourseTask" resultMap="voMap">
+    <select id="voList" parameterType="com.pzhu.iacaa2_0.entityVo.CourseTaskVo" resultMap="voMap">
         select
         <include refid="Base_Column_List"/>
         from t_course_task
@@ -86,8 +86,14 @@
                 <if test="id != null and id !=''">
                     AND id = #{id}
                 </if>
+                <if test="word != null and word !=''">
+                    AND describes like CONCAT(CONCAT('%',#{word}),'%')
+                </if>
                 <if test="courseId != null and courseId !=''">
                     AND course_id = #{courseId}
+                </if>
+                <if test="year != null and year !=''">
+                    AND year = #{year}
                 </if>
                 <if test="targetId != null and targetId !=''">
                     AND target_id = #{targetId}

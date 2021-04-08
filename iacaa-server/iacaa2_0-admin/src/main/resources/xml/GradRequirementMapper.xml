@@ -20,12 +20,15 @@
     </sql>
 
 
-    <select id="getByEntity" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="listByVo" parameterType="com.pzhu.iacaa2_0.entityVo.GradRequirementVo" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_grad_requirement
         <where>
             <trim prefixOverrides="AND">
+                <if test="word != null and word !=''">
+                    AND name like CONCAT(CONCAT('%',#{word}),'%')
+                </if>
                 <if test="name != null and name !=''">
                     AND name = #{name}
                 </if>

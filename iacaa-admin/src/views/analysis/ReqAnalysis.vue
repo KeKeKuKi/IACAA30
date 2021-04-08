@@ -1,12 +1,14 @@
 <template>
   <div>
     <div class="historyLabel">
-      <el-select v-model="serchForm.year" placeholder="选择事件" filterable clearable @change="getList()">
-        <el-option label="2021" value="2021"/>
-        <el-option label="2020" value="2020"/>
+      <el-select v-model="serchForm.year" placeholder="选择年份" filterable clearable @change="getList()">
+        <el-option v-for="year in lastFiveYears" :label="year" :value="year"/>
       </el-select>
+      <el-input v-model="serchForm.word" placeholder="标题/描述" style="display: inline-block;width: 300px;padding: 10px"></el-input>
+      <el-button type="primary" icon="el-icon-search" @click="getList">搜索</el-button>
+
       <span style="float: right;margin-right: 180px">
-        <el-button type="primary" @click="refreshData">刷新数据</el-button>
+        <el-button type="primary" @click="refreshData">同步实时数据</el-button>
       </span>
       <div id="historyData" class="historyCanvas"/>
     </div>
@@ -36,13 +38,20 @@ export default {
   data() {
     return {
       serchForm: {
-        year: new Date().getFullYear()
+        year: new Date().getFullYear(),
+        word: ''
       },
       dialogVisible: false,
-      viewingReq: {}
+      viewingReq: {},
+      lastFiveYears: []
     }
   },
   mounted() {
+    let thisYear = new Date().getFullYear()
+    for (let i = 0; i < 5; i++) {
+      this.lastFiveYears.push(thisYear)
+      thisYear = thisYear -1
+    }
     this.getList()
   },
   methods: {
@@ -68,7 +77,7 @@ export default {
 
 
       let names = targets.map(i => {
-        return i.discribe
+        return i.id + ':' + i.discribe
       })
 
       let sysScores = targets.map(i => {
@@ -168,7 +177,8 @@ export default {
     },
     getList() {
       requestByClient(supplierConsumer, 'POST', 'gradRequirement/list', {
-        year: this.serchForm.year
+        year: this.serchForm.year,
+        word: this.serchForm.word
       }, res => {
         if (res.data.succ) {
           let data = res.data.data

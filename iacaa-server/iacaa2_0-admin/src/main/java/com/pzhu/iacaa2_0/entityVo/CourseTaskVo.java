@@ -12,4 +12,5 @@ import java.util.List;
 public class CourseTaskVo extends CourseTask {
     Target target;
     Course course;
+    String word;
 }

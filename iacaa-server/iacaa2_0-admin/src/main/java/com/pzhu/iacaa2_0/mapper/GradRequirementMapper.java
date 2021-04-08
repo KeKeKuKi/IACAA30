@@ -15,7 +15,7 @@ import java.util.List;
  * @since 2021-01-15
  */
 public interface GradRequirementMapper extends BaseMapper<GradRequirement> {
-    List<GradRequirement> getByEntity(GradRequirement gradRequirement);
+    List<GradRequirement> listByVo(GradRequirementVo vo);
 
     List<GradRequirementVo> voList(GradRequirementVo vo);
 

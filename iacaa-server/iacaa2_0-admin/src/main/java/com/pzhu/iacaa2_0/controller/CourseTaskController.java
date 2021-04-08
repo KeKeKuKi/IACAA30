@@ -37,8 +37,8 @@ public class CourseTaskController {
     IStuEvaluationService stuEvaluationService;
 
     @RequestMapping("/voList")
-    public ActionResult voList(@RequestBody CourseTask courseTask){
-        List<CourseTaskVo> courseTaskVos = courseTaskService.voList(courseTask);
+    public ActionResult voList(@RequestBody CourseTaskVo vo){
+        List<CourseTaskVo> courseTaskVos = courseTaskService.voList(vo);
         return ActionResult.ofSuccess(courseTaskVos);
     }
 

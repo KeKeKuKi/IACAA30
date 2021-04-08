@@ -19,7 +19,7 @@ import java.util.List;
 public interface CourseTaskMapper extends BaseMapper<CourseTask> {
     List<CourseTask> getByCourseId(Long id);
 
-    List<CourseTaskVo> voList(CourseTask courseTask);
+    List<CourseTaskVo> voList(CourseTaskVo vo);
 
     List<CourseTask> list(CourseTask courseTask);
 

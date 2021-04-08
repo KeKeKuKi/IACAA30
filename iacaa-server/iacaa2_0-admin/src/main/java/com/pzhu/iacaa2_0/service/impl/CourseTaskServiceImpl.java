@@ -31,8 +31,8 @@ public class CourseTaskServiceImpl extends ServiceImpl<CourseTaskMapper, CourseT
     ICheckLinkService checkLinkService;
 
     @Override
-    public List<CourseTaskVo> voList(CourseTask courseTask) {
-        return baseMapper.voList(courseTask);
+    public List<CourseTaskVo> voList(CourseTaskVo vo) {
+        return baseMapper.voList(vo);
     }
 
     @Override

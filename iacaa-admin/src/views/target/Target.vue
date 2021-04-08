@@ -49,8 +49,24 @@
         <template slot-scope="scope">
           <el-table :data="scope.row.targets" stripe>
             <el-table-column
+              prop="id"
+              label="ID"
+              width="100"
+            />
+            <el-table-column
               prop="discribe"
               label="指标点描述"
+              width="500"
+            />
+            <el-table-column
+              prop="createdDate"
+              label="创建时间"
+              width="200"
+            />
+            <el-table-column
+              prop="updateDate"
+              label="更新时间"
+              width="200"
             />
             <el-table-column label="操作">
               <template slot-scope="scope1">

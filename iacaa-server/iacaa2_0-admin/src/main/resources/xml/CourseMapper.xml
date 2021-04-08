@@ -8,6 +8,7 @@
         <result column="name" property="name" />
         <result column="image" property="image" />
         <result column="edit_user_id" property="editUserId" />
+        <result column="edit_status" property="editStatus" />
         <result column="created_date" property="createdDate" />
         <result column="update_date" property="updateDate" />
     </resultMap>
@@ -17,6 +18,7 @@
         <result column="name" property="name" />
         <result column="image" property="image" />
         <result column="edit_user_id" property="editUserId" />
+        <result column="edit_status" property="editStatus" />
         <result column="created_date" property="createdDate" />
         <result column="update_date" property="updateDate" />
         <association property="courseTasks" column="id"
@@ -27,7 +29,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, image, edit_user_id, created_date, update_date
+        id, name, image, edit_user_id, edit_status, created_date, update_date
     </sql>
 
     <select id="voList" resultMap="voMap" parameterType="com.pzhu.iacaa2_0.entity.Course">

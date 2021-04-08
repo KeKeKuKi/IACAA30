@@ -35,14 +35,17 @@
             <el-table-column
               prop="id"
               label="ID"
+              width="200"
             />
             <el-table-column
               prop="describes"
               label="课程目标描述"
+              width="700"
             />
             <el-table-column
               prop="createdDate"
               label="创建时间"
+              width="200"
             />
             <el-table-column label="操作"
               prop="courseTasks">

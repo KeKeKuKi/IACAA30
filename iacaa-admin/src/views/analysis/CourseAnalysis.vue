@@ -2,11 +2,19 @@
   <div>
     <div class="historyLabel">
       <el-select v-model="serchForm.year" placeholder="选择时间" filterable clearable @change="getList">
-        <el-option label="2021" value="2021"/>
-        <el-option label="2020" value="2020"/>
+        <el-option v-for="year in lastFiveYear" :label="year" :value="year"/>
       </el-select>
+      <el-select v-model="serchForm.courseId" placeholder="关联课程" clearable filterable style="width: 200px;padding: 3px">
+        <el-option v-for="(item,index) in this.allCourse" :key="index" :label="item.name" :value="item.id" />
+      </el-select>
+      <el-select v-model="serchForm.targetId" placeholder="关联指标点" clearable filterable style="width: 300px;padding: 3px">
+        <el-option v-for="(item,index) in this.allTarget" :key="index" :label="item.discribe" :value="item.id" />
+      </el-select>
+      <el-input v-model="serchForm.id" placeholder="ID" style="display: inline-block;width: 100px;padding: 3px"></el-input>
+      <el-input v-model="serchForm.word" placeholder="描述" style="display: inline-block;width: 300px;padding: 3px"></el-input>
+      <el-button type="primary" icon="el-icon-search" @click="getList">搜索</el-button>
       <span style="float: right;margin-right: 180px">
-        <el-button type="primary" @click="refreshData">刷新数据</el-button>
+        <el-button type="primary" @click="refreshData">同步实时数据</el-button>
       </span>
       <div id="historyData" class="historyCanvas"/>
     </div>
@@ -37,16 +45,46 @@ export default {
   data() {
     return {
       viewingCourseTask: {},
+      lastFiveYear:[],
       dialogVisible: false,
+      allCourse: [],
+      allTarget: [],
       serchForm: {
-        year: new Date().getFullYear()
+        year: new Date().getFullYear(),
+        courseId: '',
+        targetId: '',
+        id: '',
+        word: ''
       }
     }
   },
   mounted() {
+    let thisYear = new Date().getFullYear()
+    for (let i = 0; i < 5; i++) {
+      this.lastFiveYear.push(thisYear)
+      thisYear = thisYear -1
+    }
     this.getList()
+    this.getAllTarget()
+    this.getAllCourse()
   },
   methods: {
+    getAllCourse(){
+      requestByClient(supplierConsumer, 'POST', 'course/list', {}, res => {
+        if (res.data.succ) {
+          this.allCourse = res.data.data
+        }
+      })
+    },
+    getAllTarget(){
+      requestByClient(supplierConsumer, 'POST', 'target/list', {
+        year: this.serchForm.year
+      }, res => {
+        if (res.data.succ) {
+          this.allTarget = res.data.data
+        }
+      })
+    },
     refreshData() {
       const loadingInstance = Loading.service({
         background: 'rgba(0, 0, 0, 0.7)',
@@ -70,9 +108,7 @@ export default {
       })
     },
     getList() {
-      requestByClient(supplierConsumer, 'POST', 'courseTask/voList', {
-        year: this.serchForm.year
-      }, res => {
+      requestByClient(supplierConsumer, 'POST', 'courseTask/voList', this.serchForm, res => {
         if (res.data.succ) {
           let data = res.data.data
           let courseTasksName = data.map(i => {

@@ -16,15 +16,35 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id
-        ,
-        discribe, req_id, year, sys_grade, stu_grade, created_date, update_date
+        id, discribe, req_id, year, sys_grade, stu_grade, created_date, update_date
     </sql>
 
     <select id="getByReqId" parameterType="java.lang.String" resultMap="BaseResultMap">
         select *
         from t_target
         where req_id = #{id}
+    </select>
+
+    <select id="list" parameterType="com.pzhu.iacaa2_0.entityVo.TargetVo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_target
+        <where>
+            <trim prefixOverrides="AND">
+                <if test="word != null and word !=''">
+                    AND discribe like CONCAT(CONCAT('%',#{word}),'%')
+                </if>
+                <if test="id != null and id !=''">
+                    AND id = #{id}
+                </if>
+                <if test="reqId != null and reqId !=''">
+                    AND req_id = #{reqId}
+                </if>
+                <if test="year != null">
+                    AND year = #{year}
+                </if>
+            </trim>
+        </where>
     </select>
 
     <update id="summaryByTargetId" parameterType="java.lang.Long">

@@ -29,8 +29,8 @@ public class GradRequirementServiceImpl extends ServiceImpl<GradRequirementMappe
     ITargetService targetService;
 
     @Override
-    public List<GradRequirement> list(GradRequirement gradRequirement) {
-        return baseMapper.getByEntity(gradRequirement);
+    public List<GradRequirement> list(GradRequirementVo vo) {
+        return baseMapper.listByVo(vo);
     }
 
     @Override

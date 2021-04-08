@@ -23,7 +23,7 @@ public interface IGradRequirementService extends IService<GradRequirement> {
      * @Return: List<GradRequirement>
      * @Create: 2021/1/22 16:50
      */
-    List<GradRequirement> list(GradRequirement gradRequirement);
+    List<GradRequirement> list(GradRequirementVo vo);
 
     List<GradRequirementVo> voList(GradRequirementVo vo);
 

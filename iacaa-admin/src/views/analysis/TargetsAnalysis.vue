@@ -1,14 +1,18 @@
 <template>
   <div>
     <div class="historyLabel">
-      <!--      <el-cascader-->
-      <!--        v-model="serchForm.id"-->
-      <!--        :options="options"-->
-      <!--        :props="{ expandTrigger: 'hover' }"-->
-      <!--        @change="handleChange">-->
-      <!--      </el-cascader>-->
+      <el-select v-model="serchForm.year" placeholder="选择年份" filterable clearable @change="getList()" style="width: 200px;padding: 3px">
+        <el-option v-for="year in lastFiveYears" :label="year" :value="year"/>
+      </el-select>
+      <el-select v-model="serchForm.reqId" placeholder="关联毕业要求" clearable filterable style="width: 300px;padding: 3px">
+        <el-option v-for="(item,index) in reqs" :key="index" :label="item.name" :value="item.id" />
+      </el-select>
+      <el-input v-model="serchForm.id" placeholder="ID" style="display: inline-block;width: 100px;padding: 3px"></el-input>
+      <el-input v-model="serchForm.word" placeholder="描述" style="display: inline-block;width: 300px;padding: 3px"></el-input>
+      <el-button type="primary" icon="el-icon-search" @click="getList">搜索</el-button>
+
       <span style="float: right;margin-right: 180px">
-        <el-button type="primary" @click="refreshData">刷新数据</el-button>
+        <el-button type="primary" @click="refreshData">同步实时数据</el-button>
       </span>
       <div id="historyData" class="historyCanvas"/>
     </div>
@@ -41,6 +45,8 @@ export default {
       serchForm: {
         year: new Date().getFullYear(),
         id: '',
+        word:'',
+        reqId:''
       },
       options: [],
       dialogVisible: false,
@@ -49,17 +55,32 @@ export default {
         score: '',
         courseTargets: [],
         courseTasks: []
-      }
+      },
+      reqs:[],
+      lastFiveYears: []
     }
   },
   mounted() {
+    let thisYear = new Date().getFullYear()
+    for (let i = 0; i < 5; i++) {
+      this.lastFiveYears.push(thisYear)
+      thisYear = thisYear -1
+    }
     this.getList()
   },
   methods: {
-    getList() {
-      requestByClient(supplierConsumer, 'POST', 'target/list', {
+    getReqList(){
+      requestByClient(supplierConsumer, 'POST', 'gradRequirement/list', {
         year: this.serchForm.year
       }, res => {
+        if (res.data.succ) {
+          this.reqs = res.data.data
+        }
+      })
+    },
+    getList() {
+      this.getReqList()
+      requestByClient(supplierConsumer, 'POST', 'target/list', this.serchForm, res => {
         if (res.data.succ) {
           let data = res.data.data
           let names = data.map(i => {
@@ -269,7 +290,7 @@ export default {
           data: tasksName,
           axisLabel: {
             interval: 0,
-            rotate: 40
+            rotate: 90
           }
         },
         yAxis: {
@@ -400,7 +421,7 @@ export default {
         target: 'document.body',
         body: true
       })
-      requestByClient(supplierConsumer, 'POST', 'courseTask/summaryStuScore', {}, res => {
+      requestByClient(supplierConsumer, 'POST', 'courseTask/summaryCourseTask', {}, res => {
         if (res.data.succ) {
           this.$message({
             message: '数据已刷新',

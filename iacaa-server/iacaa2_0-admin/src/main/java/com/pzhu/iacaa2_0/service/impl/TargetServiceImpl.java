@@ -3,6 +3,7 @@ package com.pzhu.iacaa2_0.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.pzhu.iacaa2_0.entity.CourseTarget;
 import com.pzhu.iacaa2_0.entity.Target;
+import com.pzhu.iacaa2_0.entityVo.TargetVo;
 import com.pzhu.iacaa2_0.mapper.TargetMapper;
 import com.pzhu.iacaa2_0.service.ICourseTaskService;
 import com.pzhu.iacaa2_0.service.ITargetService;
@@ -43,5 +44,10 @@ public class TargetServiceImpl extends ServiceImpl<TargetMapper, Target> impleme
         });
 
         return true;
+    }
+
+    @Override
+    public List<Target> list(TargetVo vo) {
+        return baseMapper.list(vo);
     }
 }

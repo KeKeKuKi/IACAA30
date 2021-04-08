@@ -8,7 +8,6 @@
       <el-button type="primary" @click="getList()">查询</el-button>
     </el-form-item>
   </el-form>
-  <el-divider></el-divider>
   <el-table
     ref="multipleTable"
     :data="tableData"
@@ -25,7 +24,7 @@
       width="50">
     </el-table-column>
     <el-table-column
-      prop="image"
+      prop="id"
       label="课程编号"
       width="100">
     </el-table-column>
@@ -35,9 +34,23 @@
       width="200">
     </el-table-column>
     <el-table-column
-      prop="discribe"
+      prop="image"
       label="简介"
-      width="900">
+      width="600">
+    </el-table-column>
+    <el-table-column
+      prop="editUserId"
+      label="课程管理员"
+      width="150">
+    </el-table-column>
+    <el-table-column label="管理员可编辑状态" >
+      <template slot-scope="scope">
+        <el-switch
+          v-model="editAbles[scope.$index]"
+          active-color="#13ce66"
+          inactive-color="#ff4949">
+        </el-switch>
+      </template>
     </el-table-column>
     <el-table-column label="操作" >
       <template slot-scope="scope">
@@ -118,6 +131,7 @@ export default {
   },
   data() {
     return {
+      editAbles:[],
       dialogVisible: false,
       visible: false,
       tableData: [],
@@ -159,6 +173,9 @@ export default {
       },res => {
         if (res.data.succ) {
           this.tableData = res.data.data.list
+          this.editAbles = this.tableData.map(i => {
+            return i.editStatus === 1
+          })
           this.total = res.data.data.total
           this.pageSize = res.data.data.pageSize
           this.currentPage = res.data.data.pageNum
