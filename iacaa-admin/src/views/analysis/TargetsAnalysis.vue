@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="historyLabel">
-<!--      <el-cascader-->
-<!--        v-model="serchForm.id"-->
-<!--        :options="options"-->
-<!--        :props="{ expandTrigger: 'hover' }"-->
-<!--        @change="handleChange">-->
-<!--      </el-cascader>-->
+      <!--      <el-cascader-->
+      <!--        v-model="serchForm.id"-->
+      <!--        :options="options"-->
+      <!--        :props="{ expandTrigger: 'hover' }"-->
+      <!--        @change="handleChange">-->
+      <!--      </el-cascader>-->
       <span style="float: right;margin-right: 180px">
         <el-button type="primary" @click="refreshData">刷新数据</el-button>
       </span>
@@ -16,7 +16,8 @@
       :title="targetChartForm.title"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
-      width="87%"
+      width="95%"
+      top="50px"
       @open="open"
       center
     >
@@ -55,36 +56,31 @@ export default {
     this.getList()
   },
   methods: {
-    setChartData(targetsName, series) {
+    getList() {
+      requestByClient(supplierConsumer, 'POST', 'target/list', {
+        year: this.serchForm.year
+      }, res => {
+        if (res.data.succ) {
+          let data = res.data.data
+          let names = data.map(i => {
+            return i.id + ':' + i.discribe
+          })
+          let stuGrades = data.map(i => {
+            return (i.stuGrade*100).toFixed(2)
+          })
+          let sysGrades = data.map(i => {
+            return (i.sysGrade*100).toFixed(2)
+          })
+          this.setChartData(names, stuGrades, sysGrades)
+        }
+        this.loading = false
+      })
+    },
+    setChartData(names, stuGrades, sysGrades) {
       let vue = this
       const chartDom = document.getElementById('historyData')
       const myChart = echarts.init(chartDom)
       let option
-      let colors = [
-        '#199237',
-        '#196292',
-        '#c11a9d',
-        '#e5da14',
-        '#b89220',
-        '#1c977a',
-        '#9a5a2b',
-      ]
-      let myseries = {
-        name: "系统统计成绩",
-        data: series.map(item => {
-          return item.value
-        }),
-        type: 'bar',
-        itemStyle: {
-          normal: {
-            color: '#2b5dd5'
-          }
-        },
-        showBackground: true,
-        backgroundStyle: {
-          color: 'rgba(180,180,180,0.2)'
-        }
-      }
       option = {
         tooltip: {
           trigger: 'axis',
@@ -103,30 +99,84 @@ export default {
             filterMode: 'filter'
           }
         ],
+        toolbox: {
+          show: true,
+          feature: {
+            magicType: {show: true, type: ['line', 'bar']},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
+        },
         calculable: true,
         title: {
-          text: '毕业要求成绩统计',
+          text: '指标点成绩对比分析',
           subtext: ''
         },
         xAxis: {
           type: 'category',
-          data: targetsName,
+          data: names,
           axisLabel: {
             interval: 0,
-            rotate: 40
+            rotate: 50
           }
         },
         yAxis: {
           type: 'value',
           max: 100
         },
-        series: myseries
+        series: [{
+          name: '系统成绩',
+          data: sysGrades,
+          type: 'bar',
+          itemStyle: {
+            normal: {
+              color: '#47059a'
+            }
+          },
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(180,180,180,0.2)'
+          },
+          markPoint: {
+            data: [
+              {type: 'max', name: '最大值'}
+            ]
+          },
+          markLine: {
+            data: [
+              {type: 'average', name: '平均值'}
+            ]
+          }
+        }, {
+          name: '学生评价',
+          data: stuGrades,
+          type: 'bar',
+          itemStyle: {
+            normal: {
+              color: '#23004c'
+            }
+          },
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(180,180,180,0.2)'
+          },
+          markPoint: {
+            data: [
+              {type: 'max', name: '最大值'}
+            ]
+          },
+          markLine: {
+            data: [
+              {type: 'average', name: '平均值'}
+            ]
+          }
+        }]
       }
       option && myChart.setOption(option)
       //点击事件
       myChart.on('click', function (params) {
         let po = params.name.indexOf(':')
-        vue.handleChange(parseInt(params.name.substring(0,po)))
+        vue.handleChange(parseInt(params.name.substring(0, po)))
       });
     },
     open() {
@@ -184,7 +234,7 @@ export default {
         '#9a5a2b',
       ]
       let tasksName = courseTasks.map(i => {
-        return i.describes + '(' + i.course.name + ')'
+        return i.course.name + ':' + i.describes
       })
 
       let tasksScores = courseTasks.map(i => {
@@ -259,12 +309,11 @@ export default {
       }
       let courseTasks = this.targetChartForm.courseTasks
       let tasksDta = new Array(courseTasks.length)
-      console.log(courseTasks)
       for (let courseTask of courseTasks) {
         dtataNames.push(courseTask.describes)
         let courseTaskMix = 0
         for (let courseTarget of courseTargets) {
-          if(courseTask.course.id === courseTarget.course.id ){
+          if (courseTask.course.id === courseTarget.course.id) {
             courseTaskMix = courseTask.mix * courseTarget.mix
           }
         }
@@ -365,49 +414,6 @@ export default {
         }
         this.loading = false
       })
-    },
-    getList() {
-      requestByClient(supplierConsumer, 'POST', 'gradRequirement/voListAll', {
-        year: this.serchForm.year
-      }, res => {
-        if (res.data.succ) {
-          let data = res.data.data
-          let targetsName = []
-          let max = 0
-          for (let datum of data) {
-            let children = datum.targets
-            if (max < children.length) {
-              max = children.length
-            }
-            let childObj = []
-            for (const child of children) {
-              childObj.push({
-                value: child.id,
-                label: child.discribe
-              })
-            }
-            this.options.push({
-              value: datum.id,
-              label: datum.name,
-              children: childObj
-            })
-          }
-          let series = new Array()
-          for (let i = 0; i < data.length; i++) {
-            for (let j = 0; j < max; j++) {
-              if (data[i].targets[j]) {
-                targetsName.push(data[i].targets[j].id +':' + data[i].targets[j].discribe)
-                series.push({
-                  value: (data[i].targets[j].sysGrade * 100).toFixed(2),
-                  id: data[i].targets[j].id
-                })
-              }
-            }
-          }
-          this.setChartData(targetsName, series)
-        }
-        this.loading = false
-      })
     }
   }
 }
@@ -430,16 +436,16 @@ export default {
 }
 
 .targetPie {
-  width: 1000px;
-  height: 600px;
+  width: 1300px;
+  height: 750px;
   padding: 10px;
   display: inline-block;
 }
 
 .targetBar {
   margin-left: 50px;
-  width: 500px;
-  height: 600px;
+  width: 400px;
+  height: 750px;
   padding: 10px;
   display: inline-block;
 }

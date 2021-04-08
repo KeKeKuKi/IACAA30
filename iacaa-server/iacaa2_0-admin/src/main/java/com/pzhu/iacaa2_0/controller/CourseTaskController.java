@@ -2,10 +2,8 @@ package com.pzhu.iacaa2_0.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.github.pagehelper.PageHelper;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.CourseTask;
-import com.pzhu.iacaa2_0.entity.StuEvaluation;
 import com.pzhu.iacaa2_0.entityVo.CourseTaskVo;
 import com.pzhu.iacaa2_0.service.ICourseTaskService;
 import com.pzhu.iacaa2_0.service.IStuEvaluationService;
@@ -97,10 +95,10 @@ public class CourseTaskController {
                 checkMap.put(key,i.getMix());
             }else {
                 checkMap.put(key, i.getMix() + checkMap.get(key));
-                if(checkMap.get(key) > 1.01D){
+                if(checkMap.get(key) > 1.000001D){
                     able.set(false);
                 }
-                if(checkMap.get(key) < 0.01D){
+                if(checkMap.get(key) < 0.000001D){
                     able.set(false);
                 }
             }

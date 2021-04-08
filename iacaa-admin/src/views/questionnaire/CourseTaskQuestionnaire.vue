@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="top">
     <div style="width: 90%;margin-left: 5%;text-align: left">
       <br>
       <div style="color: #47033c;font-size: 22px">欢迎来到攀枝花学院学生毕业要求达成评价及分析系统</div>
@@ -9,14 +9,7 @@
       <div style="color: #7b7b7b;font-size: 16px">您完成问卷后可以继续作答，我们将自动为您生成新的提问！</div>
       <hr>
       <br>
-      <br>
-      <span>
-    <el-form :inline="true" :model="questionnaireForm" class="demo-form-inline" style="color:#343434;">
-      <el-form-item label="您的学号:">
-        <el-input v-model="questionnaireForm.stuNo" placeholder="请输入您的学号" clearable/>
-      </el-form-item>
-    </el-form>
-    </span>
+      <el-input v-model="questionnaireForm.stuNo" placeholder="请输入您的学号" clearable style="width: 100%"/>
       <hr>
       <span v-for="(item,i) in questionnaireForm.courseTaskEvaluations">
     <div style="color: #282828">
@@ -35,17 +28,20 @@
     <br>
     </span>
       <br>
-      <el-button type="primary" v-if="this.progress === 100" @click="submitForm" style="margin-left: 80%">提交问卷
+      <el-button type="primary" :disabled="this.progress !== 100" @click="submitForm" style="width: 100%">提交问卷
       </el-button>
       <br>
       <br>
-      <el-progress :text-inside="true" :stroke-width="24" :percentage="this.progress" status="success"></el-progress>
+      <div style="position: fixed;bottom: 70px;left: 5%;z-index:-1;width: 90%;height: 20px">
+        <el-progress :text-inside="true" :stroke-width="24" :percentage="this.progress" status="success"></el-progress>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import {requestByClient, supplierConsumer} from "@/utils/HttpUtils";
+import {Loading} from "element-ui";
 
 export default {
   name: "CourseTaskQuestionnaire",
@@ -68,6 +64,19 @@ export default {
   },
   methods: {
     submitForm() {
+      if(this.questionnaireForm.stuNo === '' || this.questionnaireForm.stuNo.length !== 12){
+        this.$message({
+          message: '请检查您的学号是否正确',
+          type: 'warning'
+        });
+        return false
+      }
+      const loadingInstance = Loading.service({
+        background: 'rgba(0, 0, 0, 0.7)',
+        text: '正在提交，感谢您的支持。。。',
+        target: 'document.body',
+        body: true
+      })
       requestByClient(supplierConsumer, 'POST', 'stuEvaluation/saveAll',
         {
           stuEvaluations: this.questionnaireForm.courseTaskEvaluations.map(i => {
@@ -86,6 +95,11 @@ export default {
             });
           }
           this.getList()
+          this.progress = 0
+          // 关闭加载动画
+          this.$nextTick(() => {
+            loadingInstance.close()
+          })
         })
     },
     changeprogress() {
@@ -108,7 +122,4 @@ export default {
 </script>
 
 <style scoped>
-.el-progress {
-
-}
 </style>

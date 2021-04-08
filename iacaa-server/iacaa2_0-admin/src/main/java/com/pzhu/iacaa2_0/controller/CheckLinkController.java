@@ -1,7 +1,6 @@
 package com.pzhu.iacaa2_0.controller;
 
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pzhu.iacaa2_0.common.ActionResult;
 import com.pzhu.iacaa2_0.entity.CheckLink;
@@ -11,7 +10,6 @@ import com.pzhu.iacaa2_0.service.ICheckLinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -68,7 +66,7 @@ public class CheckLinkController {
             i.setUpdateDate(LocalDateTime.now());
         });
 
-        if(mixAll.get() < 0.01f || mixAll.get() > 1.01f){
+        if(mixAll.get() < 0.000001f || mixAll.get() > 1.000001f){
             return ActionResult.ofFail("权重系数不能大于1或小于0");
         }
         checkLinkService.saveOrUpdateBatch(checkLinks);

@@ -11,7 +11,7 @@
       <div id="historyData" class="historyCanvas"/>
     </div>
     <el-dialog
-      :title="viewingCourseTask.name"
+      :title="'课程目标:' + viewingCourseTask.describes"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       width="75%"
@@ -29,8 +29,7 @@
 
 <script>
 import echarts from 'echarts'
-import {requestByClient} from '@/utils/HttpUtils'
-import {supplierConsumer} from '@/utils/HttpUtils'
+import {requestByClient, supplierConsumer} from '@/utils/HttpUtils'
 import {Loading} from 'element-ui'
 
 export default {
@@ -195,6 +194,7 @@ export default {
       });
     },
     selectOneCourseTask(id) {
+      console.log(id)
       requestByClient(supplierConsumer, 'POST', 'courseTask/getOne', {
         id: id
       }, res => {

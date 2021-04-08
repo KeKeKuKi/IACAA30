@@ -86,7 +86,7 @@ public class CourseTargetController {
         if(!nameOk.get()){
             return ActionResult.ofFail(200,"课程重复");
         }
-        if(totalMix.get() > 1.01){
+        if(totalMix.get() > 1.000001){
             return ActionResult.ofFail(200,"权重总和不能大于1");
         }
         if(totalMix.get() < 0){

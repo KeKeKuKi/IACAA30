@@ -155,9 +155,6 @@ export default {
       const result = val.map(item => item.id)
       this.ids = result
     },
-    onSubmit() {
-      console.log('submit!')
-    },
     getCourseList() {
       requestByClient(supplierConsumer, 'POST', 'course/list', {
       }, res => {

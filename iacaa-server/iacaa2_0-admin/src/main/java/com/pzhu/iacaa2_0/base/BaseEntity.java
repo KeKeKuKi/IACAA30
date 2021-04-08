@@ -11,7 +11,7 @@ public class BaseEntity {
     /**
      * 唯一标识
      */
-    //去除Myatisplus生成id
+    // 去除Myatisplus生成id
     @TableId(value = "id",type = IdType.AUTO)
     private Long id;
 

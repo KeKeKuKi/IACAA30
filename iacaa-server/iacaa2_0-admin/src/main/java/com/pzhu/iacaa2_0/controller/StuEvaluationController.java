@@ -55,7 +55,10 @@ public class StuEvaluationController {
     }
 
     @RequestMapping("saveAll")
-    public ActionResult saveAll (@RequestBody EvaluationsList evaluationsList, HttpServletRequest request){
+    public ActionResult saveAll (@RequestBody EvaluationsList evaluationsList, HttpServletRequest request) throws InterruptedException {
+        // 为了让用户觉得系统很牛，加载一会儿
+        Thread.sleep(500);
+
         List<StuEvaluation> stuEvaluations = evaluationsList.getStuEvaluations();
         stuEvaluations.forEach(i -> {
             i.setIp(request.getLocalAddr());
